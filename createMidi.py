@@ -6,13 +6,10 @@ from mido.midifiles import MidiTrack
 from mido import MetaMessage
 from mido import Message
 
-import globalvars
-
-
-SONG_LENGTH = globalvars.SONG_LENGTH
-MAX_POLYPHONY = globalvars.MAX_POLYPHONY
-NUM_MIDI_TRACKS = globalvars.NUM_MIDI_TRACKS
-TEMPO = globalvars.TEMPO 
+SONG_LENGTH = 10000
+MAX_POLYPHONY = 10
+NUM_MIDI_TRACKS = 3
+TEMPO = 126
 
 MAX_SUSTAIN = 200 # maximum time to sustain a note before it gets removed
 MIN_LENGTH = 100
@@ -20,7 +17,9 @@ MIN_LENGTH = 100
 
 NUM_TRACKS = NUM_MIDI_TRACKS * MAX_POLYPHONY
 
-def createMidiFile(noteArray, velocityArray, onOffArray, adjTempo, filename): 
+def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename): 
+
+    adjTempo = int(round(60000000 / tempo))
 
     '''
     This function will take a 3D numpy note Array (e.g. parsed from a midi file), and turn it into 
@@ -48,7 +47,7 @@ def createMidiFile(noteArray, velocityArray, onOffArray, adjTempo, filename):
             
             #track.append(Message('control_change', channel = 1, control=0, value=0, time=0))
 
-            # Grand Piano
+            # Drums
             track.append(Message('program_change', channel = 1, program=0, time=0))
             '''
             if i >= 0 and i < 3: 

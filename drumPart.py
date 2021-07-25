@@ -31,7 +31,7 @@ RIDE_ON = False
 KICK_ON = True
 TOM_ON = True
 SNARE_ON = True
-CRASH_ON = True
+CRASH_ON = False
 
 HI_HAT_REPEATED = True
 RIDE_REPEATED = False
@@ -311,8 +311,6 @@ def get(hihat_part = np.zeros((3,64), dtype=np.int64),
 		if not np.any(ride_part):
 			ride_part = np.concatenate((base_rhythm_ride, base_rhythm_ride, base_rhythm_ride, np.concatenate((base_rhythm_ride[:, 0:16-FILL_LENGTH], base_fill_ride), axis=1)), axis=1)
 		else: 
-			print("------------------------")
-			print(base_rhythm_ride)
 			ride_part = np.concatenate((base_rhythm_ride, base_rhythm_ride, base_rhythm_ride, np.concatenate((base_rhythm_ride[:, 0:16-FILL_LENGTH], ride_part[:, 48 + 16-FILL_LENGTH:]), axis=1)), axis=1)
 	if "crash" in whichPartsToCreate: 
 		if not np.any(crash_part):
@@ -379,7 +377,49 @@ def get(hihat_part = np.zeros((3,64), dtype=np.int64),
 	kick_part[2].fill(1)
 
 	return hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part
-	
 
+def createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part): 
 
+	hihat_part[0][hihat_part[0] == 1] = 42 # closed hi hat
+	hihat_part[0][hihat_part[0] == 2] = 46 # open hi hat
+	ride_part[0][ride_part[0] == 1] = 51 # ride cymbal 1
+	kick_part[0][kick_part[0] == 1] = 36 # bass drum 1
+	snare_part[0][snare_part[0] == 1] = 36 # bass drum 1
+	tom_h_part[0][tom_h_part[0] == 1] = 48 # mid hi tom
+	tom_m_part[0][tom_m_part[0] == 1] = 47 # mid lo tom
+	tom_l_part[0][tom_l_part[0] == 1] = 41 # low floor tom
+	crash_part[0][crash_part[0] == 1] = 49 # crash cymbal 1
+
+	# 0: kick
+	# 1: snare
+	# 2: hihat
+	# 3: ride
+	# 4: tom_h
+	# 5: tom_m
+	# 6: tom_l
+	# 7: crash
+
+	drum_part_notes = np.zeros((8,64), dtype=np.int64)
+	drum_part_velocity = np.zeros((8,64), dtype=np.int64)
+	drum_part_onoff = np.ones((8,64), dtype=np.int64) # all 1's for percussive parts (?)
+
+	drum_part_notes[0] = kick_part[0]
+	drum_part_notes[1] = snare_part[0]
+	drum_part_notes[2] = hihat_part[0]
+	drum_part_notes[3] = ride_part[0]
+	drum_part_notes[4] = tom_h_part[0]
+	drum_part_notes[5] = tom_m_part[0]
+	drum_part_notes[6] = tom_l_part[0]
+	drum_part_notes[7] = crash_part[0]
+
+	drum_part_velocity[0] = kick_part[1]
+	drum_part_velocity[1] = snare_part[1]
+	drum_part_velocity[2] = hihat_part[1]
+	drum_part_velocity[3] = ride_part[1]
+	drum_part_velocity[4] = tom_h_part[1]
+	drum_part_velocity[5] = tom_m_part[1]
+	drum_part_velocity[6] = tom_l_part[1]
+	drum_part_velocity[7] = crash_part[1]
+
+	return drum_part_notes, drum_part_velocity, drum_part_onoff
 

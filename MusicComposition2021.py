@@ -4,6 +4,7 @@
 import numpy as np
 import itertools
 import drumPart
+import createMidi
 
 whichPartsToCreate = ["hihat", "ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
 
@@ -20,24 +21,24 @@ print(snare_part[0])
 print(kick_part[0])
 print("----")
 
-print(crash_part[1])
-print(ride_part[1])
+#print(crash_part[1])
+#print(ride_part[1])
 print(hihat_part[1])
-print(tom_h_part[1])
-print(tom_m_part[1])
-print(tom_l_part[1])
-print(snare_part[1])
-print(kick_part[1])
+#print(tom_h_part[1])
+#print(tom_m_part[1])
+#print(tom_l_part[1])
+#print(snare_part[1])
+#print(kick_part[1])
 print("----")
 
-print(crash_part[2])
-print(ride_part[2])
+#print(crash_part[2])
+#print(ride_part[2])
 print(hihat_part[2])
-print(tom_h_part[2])
-print(tom_m_part[2])
-print(tom_l_part[2])
-print(snare_part[2])
-print(kick_part[2])
+#print(tom_h_part[2])
+#print(tom_m_part[2])
+#print(tom_l_part[2])
+#print(snare_part[2])
+#print(kick_part[2])
 print("----")
 
 selection = input("Modify drum part? y/n: ")
@@ -98,23 +99,30 @@ while selection != 'q' and selection != 'n':
 	print(kick_part[0])
 	print("----")
 
-	print(crash_part[1])
-	print(ride_part[1])
+	#print(crash_part[1])
+	#print(ride_part[1])
 	print(hihat_part[1])
-	print(tom_h_part[1])
-	print(tom_m_part[1])
-	print(tom_l_part[1])
-	print(snare_part[1])
-	print(kick_part[1])
+	#print(tom_h_part[1])
+	#print(tom_m_part[1])
+	#print(tom_l_part[1])
+	#print(snare_part[1])
+	#print(kick_part[1])
 	print("----")
 
-	print(crash_part[2])
-	print(ride_part[2])
+	#print(crash_part[2])
+	#print(ride_part[2])
 	print(hihat_part[2])
-	print(tom_h_part[2])
-	print(tom_m_part[2])
-	print(tom_l_part[2])
-	print(snare_part[2])
-	print(kick_part[2])
+	#print(tom_h_part[2])
+	#print(tom_m_part[2])
+	#print(tom_l_part[2])
+	#print(snare_part[2])
+	#print(kick_part[2])
 	print("----")
+
+drum_part_notes, drum_part_velocity, drum_part_onoff = \
+drumPart.createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part)
+
+createMidi.createMidiFile(drum_part_notes, drum_part_velocity, drum_part_onoff, 10, "drumPart1")
+
+
 
