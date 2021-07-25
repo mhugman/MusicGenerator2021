@@ -6,6 +6,79 @@ import itertools
 
 np.set_printoptions(linewidth=150)
 
+HI_HAT_PROB = 0.5
+RIDE_PROB = 0.5
+KICK_PROB = 0.5
+SNARE_PROB = 0.25
+TOM_H_PROB = 0.1
+TOM_M_PROB = 0.1
+TOM_L_PROB = 0.1
+CRASH_PROB = 0.1
+
+FILL_HIHAT_PROB = 0.1
+FILL_RIDE_PROB = 0
+FILL_SNARE_PROB = 0.25
+FILL_TOM_H_PROB = 0.50
+FILL_TOM_M_PROB = 0.50
+FILL_TOM_L_PROB = 0.50
+FILL_KICK_PROB = 0.1
+FILL_CRASH_PROB = 0.1
+
+FILL_LENGTH = 8 # MAX 16
+
+HI_HAT_ON = True
+RIDE_ON = False
+KICK_ON = True
+TOM_ON = True
+SNARE_ON = True
+CRASH_ON = True
+
+HI_HAT_REPEATED = True
+RIDE_REPEATED = False
+KICK_REPEATED = True
+TOM_REPEATED = True
+SNARE_REPEATED = True
+
+HI_HAT_RANDOM = True
+RIDE_RANDOM = True
+KICK_RANDOM = True
+SNARE_RANDOM = True
+TOM_RANDOM = True
+CRASH_RANDOM = False
+
+HI_HAT_CLOSED = False
+HI_HAT_OPEN = False
+HI_HAT_OPEN_SYNC = False
+HI_HAT_OPEN_BACKBEAT = False
+HI_HAT_CLOSED_SYNC = False
+HI_HAT_OPEN_QUARTERS = False
+HI_HAT_CLOSED_QUARTERS = False
+HI_HAT_CLOSED_EIGHTS = False
+HI_HAT_CLOSED_SIXTEENS = False
+
+RIDE_QUARTERS = False
+RIDE_EIGHTS = False
+RIDE_SIXTEENS = False
+RIDE_SYNC = False
+
+KICK_ONE_THREE = True
+KICK_LEAD_FOUR = False
+KICK_LEAD_DOUBLE_FOUR = True
+KICK_END = False
+KICK_DOUBLE_END = False
+
+SNARE_BACKBEAT = True
+SNARE_AMEN_1 = True
+SNARE_AMEN_2 = True
+SNARE_END = False
+SNARE_DOUBLE_END = True
+
+NO_SNARE_WHEN_OPEN_HIHAT = False
+NO_KICK_WHEN_SNARE = True
+KICK_WHEN_CRASH = True
+KICK_WHEN_OPEN_HIHAT = True
+CRASH_ON_ONE = True  
+
 def get(hihat_part = np.zeros((1,64), dtype=np.int64), 
 	ride_part = np.zeros((1,64), dtype=np.int64), 
 	kick_part = np.zeros((1,64), dtype=np.int64), 
@@ -15,78 +88,7 @@ def get(hihat_part = np.zeros((1,64), dtype=np.int64),
 	tom_l_part = np.zeros((1,64), dtype=np.int64), 
 	crash_part = np.zeros((1,64), dtype=np.int64), 
 
-	HI_HAT_PROB = 0.5, 
-	RIDE_PROB = 0.5,
-	KICK_PROB = 0.5,
-	SNARE_PROB = 0.25,
-	TOM_H_PROB = 0.1,
-	TOM_M_PROB = 0.1,
-	TOM_L_PROB = 0.1,
-	CRASH_PROB = 0.1,
-
-	FILL_HIHAT_PROB = 0.1,
-	FILL_RIDE_PROB = 0,
-	FILL_SNARE_PROB = 0.25,
-	FILL_TOM_H_PROB = 0.50,
-	FILL_TOM_M_PROB = 0.50,
-	FILL_TOM_L_PROB = 0.50,
-	FILL_KICK_PROB = 0.1,
-	FILL_CRASH_PROB = 0.1,
-
-	FILL_LENGTH = 8, # MAX 16
-
-	HI_HAT_ON = True,
-	RIDE_ON = False,
-	KICK_ON = True,
-	TOM_ON = True,
-	SNARE_ON = True,
-	CRASH_ON = True,
-
-	HI_HAT_REPEATED = True,
-	RIDE_REPEATED = False,
-	KICK_REPEATED = True,
-	TOM_REPEATED = True,
-	SNARE_REPEATED = True,
-
-	HI_HAT_RANDOM = True,
-	RIDE_RANDOM = True,
-	KICK_RANDOM = True,
-	SNARE_RANDOM = True,
-	TOM_RANDOM = True,
-	CRASH_RANDOM = False,
-
-	HI_HAT_CLOSED = False,
-	HI_HAT_OPEN = False,
-	HI_HAT_OPEN_SYNC = False,
-	HI_HAT_OPEN_BACKBEAT = False,
-	HI_HAT_CLOSED_SYNC = False,
-	HI_HAT_OPEN_QUARTERS = False,
-	HI_HAT_CLOSED_QUARTERS = False,
-	HI_HAT_CLOSED_EIGHTS = False,
-	HI_HAT_CLOSED_SIXTEENS = False,
-
-	RIDE_QUARTERS = False,
-	RIDE_EIGHTS = False,
-	RIDE_SIXTEENS = False,
-	RIDE_SYNC = False,
-
-	KICK_ONE_THREE = True,
-	KICK_LEAD_FOUR = False,
-	KICK_LEAD_DOUBLE_FOUR = True,
-	KICK_END = False,
-	KICK_DOUBLE_END = False,
-
-	SNARE_BACKBEAT = True,
-	SNARE_AMEN_1 = True,
-	SNARE_AMEN_2 = True,
-	SNARE_END = False,
-	SNARE_DOUBLE_END = True,
-
-	NO_SNARE_WHEN_OPEN_HIHAT = False,
-	NO_KICK_WHEN_SNARE = True,
-	KICK_WHEN_CRASH = True,
-	KICK_WHEN_OPEN_HIHAT = True,
-	CRASH_ON_ONE = True  ): 
+	whichPartsToCreate = [] ): 
 	 
 	base_rhythm_hihat = np.zeros((1,16), dtype=np.int64)
 	base_rhythm_ride = np.zeros((1,16), dtype=np.int64)
@@ -298,22 +300,55 @@ def get(hihat_part = np.zeros((1,64), dtype=np.int64),
 	base_fill_kick = np.random.binomial(1, FILL_KICK_PROB, size=(1,FILL_LENGTH))
 	base_fill_crash = np.random.binomial(1, FILL_CRASH_PROB, size=(1,FILL_LENGTH))
 
-	if not np.any(ride_part):
-		ride_part = np.concatenate((base_rhythm_ride, base_rhythm_ride, base_rhythm_ride, np.concatenate((base_rhythm_ride[0, 0:16-FILL_LENGTH], base_fill_ride[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(crash_part): 
-		crash_part = np.concatenate((base_rhythm_crash, base_rhythm_crash, base_rhythm_crash, np.concatenate((base_rhythm_crash[0, 0:16-FILL_LENGTH], base_fill_crash[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(hihat_part):
-		hihat_part = np.concatenate((base_rhythm_hihat, base_rhythm_hihat, base_rhythm_hihat, np.concatenate((base_rhythm_hihat[0, 0:16-FILL_LENGTH], base_fill_hihat[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(tom_h_part):
-		tom_h_part = np.concatenate((base_rhythm_tom_h, base_rhythm_tom_h, base_rhythm_tom_h, np.concatenate((base_rhythm_tom_h[0, 0:16-FILL_LENGTH], base_fill_tom_H[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(tom_m_part):
-		tom_m_part = np.concatenate((base_rhythm_tom_m, base_rhythm_tom_m, base_rhythm_tom_m, np.concatenate((base_rhythm_tom_m[0, 0:16-FILL_LENGTH], base_fill_tom_M[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(tom_l_part): 
-		tom_l_part = np.concatenate((base_rhythm_tom_l, base_rhythm_tom_l, base_rhythm_tom_l, np.concatenate((base_rhythm_tom_l[0, 0:16-FILL_LENGTH], base_fill_tom_L[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(snare_part): 
-		snare_part = np.concatenate((base_rhythm_snare, base_rhythm_snare, base_rhythm_snare, np.concatenate((base_rhythm_snare[0, 0:16-FILL_LENGTH], base_fill_snare[0]), axis=0)[np.newaxis]), axis=1)
-	if not np.any(kick_part): 
-		kick_part = np.concatenate((base_rhythm_kick, base_rhythm_kick, base_rhythm_kick, np.concatenate((base_rhythm_kick[0, 0:16-FILL_LENGTH], base_fill_kick[0]), axis=0)[np.newaxis]), axis=1)
+	if "ride" in whichPartsToCreate:
+		if not np.any(ride_part):
+			ride_part = np.concatenate((base_rhythm_ride, base_rhythm_ride, base_rhythm_ride, np.concatenate((base_rhythm_ride[0, 0:16-FILL_LENGTH], base_fill_ride[0]), axis=0)[np.newaxis]), axis=1)
+		else: 
+			ride_part = np.concatenate((base_rhythm_ride, base_rhythm_ride, base_rhythm_ride, np.concatenate((base_rhythm_ride[0, 0:16-FILL_LENGTH], ride_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "crash" in whichPartsToCreate: 
+		if not np.any(crash_part):
+			crash_part = np.concatenate((base_rhythm_crash, base_rhythm_crash, base_rhythm_crash, np.concatenate((base_rhythm_crash[0, 0:16-FILL_LENGTH], base_fill_crash[0]), axis=0)[np.newaxis]), axis=1)
+		else: 
+			crash_part = np.concatenate((base_rhythm_crash, base_rhythm_crash, base_rhythm_crash, np.concatenate((base_rhythm_crash[0, 0:16-FILL_LENGTH], crash_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "hihat" in whichPartsToCreate:
+		if not np.any(hihat_part):
+			hihat_part = np.concatenate((base_rhythm_hihat, base_rhythm_hihat, base_rhythm_hihat, np.concatenate((base_rhythm_hihat[0, 0:16-FILL_LENGTH], base_fill_hihat[0]), axis=0)[np.newaxis]), axis=1)
+		else:
+			hihat_part = np.concatenate((base_rhythm_hihat, base_rhythm_hihat, base_rhythm_hihat, np.concatenate((base_rhythm_hihat[0, 0:16-FILL_LENGTH], hihat_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "tom_h" in whichPartsToCreate:
+		if not np.any(tom_h_part):
+			tom_h_part = np.concatenate((base_rhythm_tom_h, base_rhythm_tom_h, base_rhythm_tom_h, np.concatenate((base_rhythm_tom_h[0, 0:16-FILL_LENGTH], base_fill_tom_H[0]), axis=0)[np.newaxis]), axis=1)
+		else:
+			tom_h_part = np.concatenate((base_rhythm_tom_h, base_rhythm_tom_h, base_rhythm_tom_h, np.concatenate((base_rhythm_tom_h[0, 0:16-FILL_LENGTH], tom_h_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "tom_m" in whichPartsToCreate:
+		if not np.any(tom_m_part):
+			tom_m_part = np.concatenate((base_rhythm_tom_m, base_rhythm_tom_m, base_rhythm_tom_m, np.concatenate((base_rhythm_tom_m[0, 0:16-FILL_LENGTH], base_fill_tom_M[0]), axis=0)[np.newaxis]), axis=1)
+		else:
+			tom_m_part = np.concatenate((base_rhythm_tom_m, base_rhythm_tom_m, base_rhythm_tom_m, np.concatenate((base_rhythm_tom_m[0, 0:16-FILL_LENGTH], tom_m_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "tom_l" in whichPartsToCreate: 
+		if not np.any(tom_l_part):
+			tom_l_part = np.concatenate((base_rhythm_tom_l, base_rhythm_tom_l, base_rhythm_tom_l, np.concatenate((base_rhythm_tom_l[0, 0:16-FILL_LENGTH], base_fill_tom_L[0]), axis=0)[np.newaxis]), axis=1)
+		else: 
+			tom_l_part = np.concatenate((base_rhythm_tom_l, base_rhythm_tom_l, base_rhythm_tom_l, np.concatenate((base_rhythm_tom_l[0, 0:16-FILL_LENGTH], tom_l_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "snare" in whichPartsToCreate: 
+		if not np.any(snare_part):
+			snare_part = np.concatenate((base_rhythm_snare, base_rhythm_snare, base_rhythm_snare, np.concatenate((base_rhythm_snare[0, 0:16-FILL_LENGTH], base_fill_snare[0]), axis=0)[np.newaxis]), axis=1)
+		else: 
+			snare_part = np.concatenate((base_rhythm_snare, base_rhythm_snare, base_rhythm_snare, np.concatenate((base_rhythm_snare[0, 0:16-FILL_LENGTH], snare_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "kick" in whichPartsToCreate: 
+		if not np.any(kick_part):
+			kick_part = np.concatenate((base_rhythm_kick, base_rhythm_kick, base_rhythm_kick, np.concatenate((base_rhythm_kick[0, 0:16-FILL_LENGTH], base_fill_kick[0]), axis=0)[np.newaxis]), axis=1)
+		else: 
+			kick_part = np.concatenate((base_rhythm_kick, base_rhythm_kick, base_rhythm_kick, np.concatenate((base_rhythm_kick[0, 0:16-FILL_LENGTH], kick_part[0][48 + 16-FILL_LENGTH:]), axis=0)[np.newaxis]), axis=1)
+	if "fills"  in whichPartsToCreate: 
+		ride_part[0] = np.concatenate((ride_part[0, 0:64-FILL_LENGTH], base_fill_ride[0]), axis=0)
+		crash_part[0] = np.concatenate((crash_part[0, 0:64-FILL_LENGTH], base_fill_crash[0]), axis=0)
+		hihat_part[0] = np.concatenate((hihat_part[0, 0:64-FILL_LENGTH], base_fill_hihat[0]), axis=0)
+		tom_h_part[0] = np.concatenate((tom_h_part[0, 0:64-FILL_LENGTH], base_fill_tom_H[0]), axis=0)
+		tom_m_part[0] = np.concatenate((tom_m_part[0, 0:64-FILL_LENGTH], base_fill_tom_M[0]), axis=0)
+		tom_l_part[0] = np.concatenate((tom_l_part[0, 0:64-FILL_LENGTH], base_fill_tom_L[0]), axis=0)
+		snare_part[0] = np.concatenate((snare_part[0, 0:64-FILL_LENGTH], base_fill_snare[0]), axis=0)
+		kick_part[0] = np.concatenate((kick_part[0, 0:64-FILL_LENGTH], base_fill_kick[0]), axis=0)
 
 	return hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part
 	
