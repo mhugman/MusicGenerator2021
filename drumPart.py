@@ -29,7 +29,7 @@ FILL_LENGTH = 8 # MAX 16
 HI_HAT_ON = True
 RIDE_ON = False
 KICK_ON = True
-TOM_ON = True
+TOM_ON = False
 SNARE_ON = True
 CRASH_ON = False
 
@@ -40,13 +40,13 @@ TOM_REPEATED = True
 SNARE_REPEATED = True
 
 HI_HAT_RANDOM = True
-RIDE_RANDOM = True
+RIDE_RANDOM = False
 KICK_RANDOM = True
-SNARE_RANDOM = True
-TOM_RANDOM = True
+SNARE_RANDOM = False
+TOM_RANDOM = False
 CRASH_RANDOM = False
 
-HI_HAT_CLOSED = False
+HI_HAT_CLOSED = True
 HI_HAT_OPEN = False
 HI_HAT_OPEN_SYNC = False
 HI_HAT_OPEN_BACKBEAT = False
@@ -65,18 +65,18 @@ KICK_ONE_THREE = True
 KICK_LEAD_FOUR = False
 KICK_LEAD_DOUBLE_FOUR = True
 KICK_END = False
-KICK_DOUBLE_END = False
+KICK_DOUBLE_END = True
 
 SNARE_BACKBEAT = True
 SNARE_AMEN_1 = True
-SNARE_AMEN_2 = True
+SNARE_AMEN_2 = False
 SNARE_END = False
 SNARE_DOUBLE_END = True
 
 NO_SNARE_WHEN_OPEN_HIHAT = False
-NO_KICK_WHEN_SNARE = True
-KICK_WHEN_CRASH = True
-KICK_WHEN_OPEN_HIHAT = True
+NO_KICK_WHEN_SNARE = False
+KICK_WHEN_CRASH = False
+KICK_WHEN_OPEN_HIHAT = False
 CRASH_ON_ONE = True  
 
 RIDE_VOL = 75
@@ -378,17 +378,43 @@ def get(hihat_part = np.zeros((3,64), dtype=np.int64),
 
 	return hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part
 
-def createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part): 
+def createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part):
 
-	hihat_part[0][hihat_part[0] == 1] = 42 # closed hi hat
-	hihat_part[0][hihat_part[0] == 2] = 46 # open hi hat
-	ride_part[0][ride_part[0] == 1] = 51 # ride cymbal 1
-	kick_part[0][kick_part[0] == 1] = 36 # bass drum 1
-	snare_part[0][snare_part[0] == 1] = 36 # bass drum 1
-	tom_h_part[0][tom_h_part[0] == 1] = 48 # mid hi tom
-	tom_m_part[0][tom_m_part[0] == 1] = 47 # mid lo tom
-	tom_l_part[0][tom_l_part[0] == 1] = 41 # low floor tom
-	crash_part[0][crash_part[0] == 1] = 49 # crash cymbal 1
+	indices_1 = np.where(np.logical_and(np.greater_equal(hihat_part[0],0.9),np.less_equal(hihat_part[0],1.1)))
+	indices_2 = np.where(np.logical_and(np.greater_equal(hihat_part[0],1.9),np.less_equal(hihat_part[0],2.1)))
+	hihat_part[0][indices_1] = 42
+	hihat_part[0][indices_2] = 46
+
+	indices = np.where(np.greater_equal(snare_part[0],0.9))
+	snare_part[0][indices] = 38
+
+	indices = np.where(np.greater_equal(ride_part[0],0.9))
+	ride_part[0][indices] = 51
+
+	indices = np.where(np.greater_equal(kick_part[0],0.9))
+	kick_part[0][indices] = 36
+
+	indices = np.where(np.greater_equal(tom_h_part[0],0.9))
+	tom_h_part[0][indices] = 48
+
+	indices = np.where(np.greater_equal(tom_m_part[0],0.9))
+	tom_m_part[0][indices] = 47
+
+	indices = np.where(np.greater_equal(tom_l_part[0],0.9))
+	tom_l_part[0][indices] = 41
+
+	indices = np.where(np.greater_equal(crash_part[0],0.9))
+	crash_part[0][indices] = 49
+
+	#hihat_part[0][hihat_part[0] > 0.9] = 42 # closed hi hat
+	#hihat_part[0][hihat_part[0] > 1.9] = 46 # open hi hat
+	#ride_part[0][ride_part[0] > 0.9] = 51 # ride cymbal 1
+	#kick_part[0][kick_part[0] > 0.9] = 36 # bass drum 1
+	#snare_part[0][snare_part[0] > 0.9] = 38 # snare
+	#tom_h_part[0][tom_h_part[0] > 0.9] = 48 # mid hi tom
+	#tom_m_part[0][tom_m_part[0] > 0.9] = 47 # mid lo tom
+	#tom_l_part[0][tom_l_part[0] > 0.9] = 41 # low floor tom
+	#crash_part[0][crash_part[0] > 0.9] = 49 # crash cymbal 1
 
 	# 0: kick
 	# 1: snare

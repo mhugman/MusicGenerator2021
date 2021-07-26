@@ -4,7 +4,12 @@
 import numpy as np
 import itertools
 import drumPart
-import createMidi
+import midiFunctions
+import mido
+import sys
+
+np.set_printoptions(linewidth=150)
+np.set_printoptions(threshold=sys.maxsize)
 
 whichPartsToCreate = ["hihat", "ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
 
@@ -19,27 +24,27 @@ print(tom_m_part[0])
 print(tom_l_part[0])
 print(snare_part[0])
 print(kick_part[0])
-print("----")
+print("--------------------------------")
 
 #print(crash_part[1])
 #print(ride_part[1])
-print(hihat_part[1])
+#print(hihat_part[1])
 #print(tom_h_part[1])
 #print(tom_m_part[1])
 #print(tom_l_part[1])
 #print(snare_part[1])
 #print(kick_part[1])
-print("----")
+#print("----")
 
 #print(crash_part[2])
 #print(ride_part[2])
-print(hihat_part[2])
+#print(hihat_part[2])
 #print(tom_h_part[2])
 #print(tom_m_part[2])
 #print(tom_l_part[2])
 #print(snare_part[2])
 #print(kick_part[2])
-print("----")
+#print("----")
 
 selection = input("Modify drum part? y/n: ")
 
@@ -101,28 +106,47 @@ while selection != 'q' and selection != 'n':
 
 	#print(crash_part[1])
 	#print(ride_part[1])
-	print(hihat_part[1])
+	#print(hihat_part[1])
 	#print(tom_h_part[1])
 	#print(tom_m_part[1])
 	#print(tom_l_part[1])
 	#print(snare_part[1])
 	#print(kick_part[1])
-	print("----")
+	#print("----")
 
 	#print(crash_part[2])
 	#print(ride_part[2])
-	print(hihat_part[2])
+	#print(hihat_part[2])
 	#print(tom_h_part[2])
 	#print(tom_m_part[2])
 	#print(tom_l_part[2])
 	#print(snare_part[2])
 	#print(kick_part[2])
-	print("----")
+	print("----------------------")
 
 drum_part_notes, drum_part_velocity, drum_part_onoff = \
 drumPart.createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part)
 
-createMidi.createMidiFile(drum_part_notes, drum_part_velocity, drum_part_onoff, 10, "drumPart1")
+midiFunctions.createMidiFile(drum_part_notes, drum_part_velocity, drum_part_onoff, 80, "drumPart1")
+
+noteArray, velocityArray, onOffArray = midiFunctions.parseMidi(mido.MidiFile('midi/drumPart1.mid'))
+
+print(noteArray[0])
+print("----")
+print(noteArray[1])
+print("----")
+print(noteArray[2])
+print("----")
+print(noteArray[3])
+print("----")
+print(noteArray[4])
+print("----")
+print(noteArray[5])
+print("----")
+print(noteArray[6])
+print("----")
+print(noteArray[7])
+print("----")
 
 
 
