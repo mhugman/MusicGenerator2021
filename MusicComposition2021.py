@@ -13,9 +13,12 @@ np.set_printoptions(threshold=sys.maxsize)
 
 whichPartsToCreate = ["hihat", "ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
 
-hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part = \
+hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, \
+hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, \
+tom_l_part_fill, crash_part_fill = \
 	drumPart.get(whichPartsToCreate=whichPartsToCreate)
 
+print("Without fill: ")
 print(crash_part[0])
 print(ride_part[0])
 print(hihat_part[0])
@@ -24,6 +27,17 @@ print(tom_m_part[0])
 print(tom_l_part[0])
 print(snare_part[0])
 print(kick_part[0])
+print("--------------------------------")
+
+print("With fill: ")
+print(crash_part_fill[0])
+print(ride_part_fill[0])
+print(hihat_part_fill[0])
+print(tom_h_part_fill[0])
+print(tom_m_part_fill[0])
+print(tom_l_part_fill[0])
+print(snare_part_fill[0])
+print(kick_part_fill[0])
 print("--------------------------------")
 
 #print(crash_part[1])
@@ -91,9 +105,14 @@ while selection != 'q' and selection != 'n':
 		elif selection == "c": 
 			whichPartsToCreate.append("crash")
 
-	hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part = drumPart.get( \
-		hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, whichPartsToCreate=whichPartsToCreate)
-
+	hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, \
+		hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, \
+		tom_l_part_fill, crash_part_fill = \
+		drumPart.get(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, \
+		hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, \
+		tom_l_part_fill, crash_part_fill, whichPartsToCreate=whichPartsToCreate)
+	
+	print("Without fill: ")
 	print(crash_part[0])
 	print(ride_part[0])
 	print(hihat_part[0])
@@ -102,7 +121,18 @@ while selection != 'q' and selection != 'n':
 	print(tom_l_part[0])
 	print(snare_part[0])
 	print(kick_part[0])
-	print("----")
+	print("--------------------------------")
+
+	print("With fill: ")
+	print(crash_part_fill[0])
+	print(ride_part_fill[0])
+	print(hihat_part_fill[0])
+	print(tom_h_part_fill[0])
+	print(tom_m_part_fill[0])
+	print(tom_l_part_fill[0])
+	print(snare_part_fill[0])
+	print(kick_part_fill[0])
+	print("--------------------------------")
 
 	#print(crash_part[1])
 	#print(ride_part[1])
@@ -125,12 +155,60 @@ while selection != 'q' and selection != 'n':
 	print("----------------------")
 
 drum_part_notes, drum_part_velocity, drum_part_onoff = \
-drumPart.createCompleteDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part)
+drumPart.compileDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part)
 
-midiFunctions.createMidiFile(drum_part_notes, drum_part_velocity, drum_part_onoff, 80, "drumPart1")
+drum_part_notes_fill, drum_part_velocity_fill, drum_part_onoff_fill = \
+drumPart.compileDrumPart(hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, tom_l_part_fill, crash_part_fill)
+
+print("Select structure of drum segment: ")
+print("Options: ")
+print("1: AAAB")
+print("2: ABAB")
+print("3: AABA")
+print("4: ABAA")
+print("5: ABBA")
+print("6: AAB")
+print("7: ABA")
+print("8: ABB")
+structure_selection = input("Selection: ")
+
+if structure_selection == "1": 
+	structure = "AAAB"
+elif structure_selection == "2": 
+	structure = "ABAB"
+elif structure_selection == "3": 
+	structure = "AABA"
+elif structure_selection == "4": 
+	structure = "ABAA"
+elif structure_selection == "5": 
+	structure = "ABBA"
+elif structure_selection == "6": 
+	structure = "AAB"
+elif structure_selection == "7": 
+	structure = "ABA"
+elif structure_selection == "8": 
+	structure = "ABB"
+
+drum_segment_notes, drum_segment_velocity, drum_segment_onoff = \
+	drumPart.createDrumSegmentFromTwoParts(drum_part_notes, drum_part_velocity, drum_part_onoff, \
+	drum_part_notes_fill, drum_part_velocity_fill, drum_part_onoff_fill, 
+	structure)
+
+print(drum_segment_notes[0])
+print(drum_segment_notes[1])
+print(drum_segment_notes[2])
+print(drum_segment_notes[3])
+print(drum_segment_notes[4])
+print(drum_segment_notes[5])
+print(drum_segment_notes[6])
+print(drum_segment_notes[7])
+print("--------------------------------")
+
+midiFunctions.createMidiFile(drum_segment_notes, drum_segment_velocity, drum_segment_onoff, 80, "drumPart1")
 
 noteArray, velocityArray, onOffArray = midiFunctions.parseMidi(mido.MidiFile('midi/drumPart1.mid'))
 
+"""
 print(noteArray[0])
 print("----")
 print(noteArray[1])
@@ -147,6 +225,6 @@ print(noteArray[6])
 print("----")
 print(noteArray[7])
 print("----")
-
+"""
 
 
