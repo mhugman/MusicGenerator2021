@@ -44,11 +44,11 @@ TOM_REPEATED = True
 SNARE_REPEATED = True
 
 # Number of 16th notes to form one chunk to be repeated
-HI_HAT_REPEAT_UNIT = 4
+HI_HAT_REPEAT_UNIT = 5
 RIDE_REPEAT_UNIT = 4
 KICK_REPEAT_UNIT = 8
 TOM_REPEAT_UNIT = 3
-SNARE_REPEAT_UNIT = 8
+SNARE_REPEAT_UNIT = 5
 
 HI_HAT_RANDOM = True
 RIDE_RANDOM = False
@@ -133,8 +133,27 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 	if HI_HAT_ON: 
 
 		if HI_HAT_RANDOM and HI_HAT_REPEATED: 
-			micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,4))
-			base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+
+			if HI_HAT_REPEAT_UNIT == 4: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,4))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+			elif HI_HAT_REPEAT_UNIT == 8: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,8))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+			elif HI_HAT_REPEAT_UNIT == 3: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,3))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
+			elif HI_HAT_REPEAT_UNIT == 5: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,5))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
+			elif HI_HAT_REPEAT_UNIT == 7: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,7))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
+			elif HI_HAT_REPEAT_UNIT == 6: 
+				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,7))
+				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,4), dtype=np.int64)), axis=1)
+			else: 
+				print("repeat unit not accounted for")
 
 		elif HI_HAT_RANDOM: 
 			base_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,16))	
