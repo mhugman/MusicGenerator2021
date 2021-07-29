@@ -96,12 +96,12 @@ while selection != 'q' and selection != 'n':
 			whichPartsToCreate.append("kick")
 		elif selection == "s": 
 			whichPartsToCreate.append("snare")
-		elif selection == "t1": 
+		elif selection == "1": 
 			whichPartsToCreate.append("tom_h")
-		elif selection == "t2": 
+		elif selection == "2": 
 			whichPartsToCreate.append("tom_m")
-		elif selection == "t3": 
-			hwhichPartsToCreate.append("tom_l")
+		elif selection == "3": 
+			whichPartsToCreate.append("tom_l")
 		elif selection == "c": 
 			whichPartsToCreate.append("crash")
 

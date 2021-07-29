@@ -12,9 +12,9 @@ HI_HAT_PROB = 0.5
 RIDE_PROB = 0.5
 KICK_PROB = 0.5
 SNARE_PROB = 0.25
-TOM_H_PROB = 0.1
-TOM_M_PROB = 0.1
-TOM_L_PROB = 0.1
+TOM_H_PROB = 0.5
+TOM_M_PROB = 0.5
+TOM_L_PROB = 0.5
 CRASH_PROB = 0.1
 
 FILL_HIHAT_PROB = 0.1
@@ -33,7 +33,7 @@ FILL_LENGTH = 8 # MAX 16
 HI_HAT_ON = True
 RIDE_ON = False
 KICK_ON = True
-TOM_ON = False
+TOM_ON = True
 SNARE_ON = True
 CRASH_ON = False
 
@@ -44,7 +44,7 @@ TOM_REPEATED = True
 SNARE_REPEATED = True
 
 # Number of 16th notes to form one chunk to be repeated
-HI_HAT_REPEAT_UNIT = 5
+HI_HAT_REPEAT_UNIT = 3
 RIDE_REPEAT_UNIT = 4
 KICK_REPEAT_UNIT = 8
 TOM_REPEAT_UNIT = 3
@@ -57,7 +57,7 @@ SNARE_RANDOM = False
 TOM_RANDOM = True
 CRASH_RANDOM = False
 
-HI_HAT_CLOSED = True
+HI_HAT_CLOSED = False
 HI_HAT_OPEN = False
 HI_HAT_OPEN_SYNC = False
 HI_HAT_OPEN_BACKBEAT = False
@@ -82,13 +82,14 @@ SNARE_BACKBEAT = True
 SNARE_AMEN_1 = True
 SNARE_AMEN_2 = False
 SNARE_END = False
-SNARE_DOUBLE_END = True
+SNARE_DOUBLE_END = False
 
 NO_SNARE_WHEN_OPEN_HIHAT = False
-NO_KICK_WHEN_SNARE = False
+NO_KICK_WHEN_SNARE = True
 KICK_WHEN_CRASH = False
 KICK_WHEN_OPEN_HIHAT = False
 CRASH_ON_ONE = True  
+TOM_MONOPHONIC = True
 
 RIDE_VOL = 75
 HIHAT_VOL = 75
@@ -311,18 +312,64 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 	if TOM_ON: 
 		if TOM_RANDOM and TOM_REPEATED: 
 
-			micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,8))
-			base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
-			micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,8))
-			base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
-			micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,8))
-			base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1)
+			if TOM_REPEAT_UNIT == 4:
+				print("----- HERE ----- ")
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,4))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,4))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,4))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1) 
+			
+			elif TOM_REPEAT_UNIT == 8: 
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,8))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,8))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,8))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1)
+			elif TOM_REPEAT_UNIT == 3:
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,3))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,3))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,3))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
+			
+			elif TOM_REPEAT_UNIT == 5: 
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,5))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,5))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,5))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
+			elif TOM_REPEAT_UNIT == 7: 
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,7))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,7))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,7))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1) 	
+			elif TOM_REPEAT_UNIT == 6: 
+				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,6))
+				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,4), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,6))
+				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,4), dtype=np.int64) ), axis=1)
+				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,6))
+				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,4), dtype=np.int64) ), axis=1) 
+			else: 
+				print("repeat unit not accounted for")
 
 		elif TOM_RANDOM: 
 
 			base_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,16))
 			base_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,16))
 			base_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,16))
+
+		if TOM_MONOPHONIC: 
+			indices = np.where(base_rhythm_tom_m[0]>0.9)
+			base_rhythm_tom_h[0][indices] = 0
+			base_rhythm_tom_l[0][indices] = 0
 
 
 	if CRASH_ON:
