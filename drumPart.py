@@ -6,6 +6,10 @@ import itertools
 
 np.set_printoptions(linewidth=150)
 
+TIME_SIG = 5  # 4 = 4/4, 5 = 5/4, 3 = 3/4
+
+NUM_16th_PER_BAR = TIME_SIG * 4
+
 # Probabilities
 
 HI_HAT_PROB = 0.5
@@ -47,7 +51,7 @@ SNARE_REPEATED = True
 HI_HAT_REPEAT_UNIT = 3
 RIDE_REPEAT_UNIT = 4
 KICK_REPEAT_UNIT = 8
-TOM_REPEAT_UNIT = 3
+TOM_REPEAT_UNIT = 5
 SNARE_REPEAT_UNIT = 5
 
 HI_HAT_RANDOM = True
@@ -98,34 +102,34 @@ SNARE_VOL = 100
 CRASH_VOL = 50
 TOM_VOL = 75
 
-def get(hihat_part = np.zeros((3,16), dtype=np.int64), 
-	ride_part = np.zeros((3,16), dtype=np.int64), 
-	kick_part = np.zeros((3,16), dtype=np.int64), 
-	snare_part = np.zeros((3,16), dtype=np.int64), 
-	tom_h_part = np.zeros((3,16), dtype=np.int64), 
-	tom_m_part = np.zeros((3,16), dtype=np.int64), 
-	tom_l_part = np.zeros((3,16), dtype=np.int64), 
-	crash_part = np.zeros((3,16), dtype=np.int64),
-	hihat_part_fill = np.zeros((3,16), dtype=np.int64), 
-	ride_part_fill = np.zeros((3,16), dtype=np.int64), 
-	kick_part_fill = np.zeros((3,16), dtype=np.int64), 
-	snare_part_fill = np.zeros((3,16), dtype=np.int64), 
-	tom_h_part_fill = np.zeros((3,16), dtype=np.int64), 
-	tom_m_part_fill = np.zeros((3,16), dtype=np.int64), 
-	tom_l_part_fill = np.zeros((3,16), dtype=np.int64), 
-	crash_part_fill = np.zeros((3,16), dtype=np.int64),  
+def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	ride_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	kick_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	snare_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_h_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_m_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_l_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	crash_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
+	hihat_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	ride_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	kick_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	snare_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_h_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_m_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	tom_l_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
+	crash_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),  
 
 	whichPartsToCreate = []
 	): 
 	 
-	base_rhythm_hihat = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_ride = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_kick= np.zeros((3,16), dtype=np.int64)
-	base_rhythm_snare = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_tom_h = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_tom_m = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_tom_l = np.zeros((3,16), dtype=np.int64)
-	base_rhythm_crash = np.zeros((3,16), dtype=np.int64)
+	base_rhythm_hihat = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_ride = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_kick= np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_snare = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_tom_h = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_tom_m = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_tom_l = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
+	base_rhythm_crash = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
 
 	# 0 = rest
 	# 1 = closed
@@ -135,33 +139,68 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 
 		if HI_HAT_RANDOM and HI_HAT_REPEATED: 
 
-			if HI_HAT_REPEAT_UNIT == 4: 
+			if NUM_16th_PER_BAR >= 4 and HI_HAT_REPEAT_UNIT == 4: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,4))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
-			elif HI_HAT_REPEAT_UNIT == 8: 
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+				elif TIME_SIG == 5: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+			elif NUM_16th_PER_BAR >= 8 and HI_HAT_REPEAT_UNIT == 8: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,8))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
-			elif HI_HAT_REPEAT_UNIT == 3: 
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, np.zeros((3,4), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 5: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,4), dtype=np.int64)), axis=1)
+
+			elif NUM_16th_PER_BAR >= 3 and HI_HAT_REPEAT_UNIT == 3: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,3))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
-			elif HI_HAT_REPEAT_UNIT == 5: 
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+				elif TIME_SIG == 5: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
+			elif NUM_16th_PER_BAR >= 5 and HI_HAT_REPEAT_UNIT == 5: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,5))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
-			elif HI_HAT_REPEAT_UNIT == 7: 
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,1), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 5: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+			elif NUM_16th_PER_BAR >= 7 and HI_HAT_REPEAT_UNIT == 7: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,7))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
-			elif HI_HAT_REPEAT_UNIT == 6: 
+				
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, np.zeros((3,5), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 5 : 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,6), dtype=np.int64)), axis=1)
+
+			elif NUM_16th_PER_BAR >= 6 and HI_HAT_REPEAT_UNIT == 6: 
 				micro_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,7))
-				base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,4), dtype=np.int64)), axis=1)
+				if TIME_SIG == 4: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,4), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 3: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat), axis=1)
+				elif TIME_SIG == 5: 
+					base_rhythm_hihat = np.concatenate((micro_rhythm_hihat, micro_rhythm_hihat, micro_rhythm_hihat, np.zeros((3,2), dtype=np.int64)), axis=1)
+
 			else: 
 				print("repeat unit not accounted for")
 
 		elif HI_HAT_RANDOM: 
-			base_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,16))	
+			base_rhythm_hihat = np.random.binomial(2, HI_HAT_PROB, size=(3,NUM_16th_PER_BAR))	
 
 		if HI_HAT_OPEN_BACKBEAT: 
 			np.put(base_rhythm_hihat[0], 4, 2)
-			np.put(base_rhythm_hihat[0], 12, 2)
+			if NUM_16th_PER_BAR > 12: 
+				np.put(base_rhythm_hihat[0], 12, 2)
 
 		if HI_HAT_CLOSED: 
 			indices = np.where(base_rhythm_hihat[0]>1.9)
@@ -172,7 +211,7 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 			base_rhythm_hihat[0][indices] = 2
 
 		if HI_HAT_CLOSED_SIXTEENS: 
-			base_rhythm_hihat = np.ones((3,16), dtype=np.int64)
+			base_rhythm_hihat = np.ones((3,NUM_16th_PER_BAR), dtype=np.int64)
 
 		if HI_HAT_CLOSED_EIGHTS: 
 			np.put(base_rhythm_hihat[0], 0, 1)
@@ -181,56 +220,83 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 			np.put(base_rhythm_hihat[0], 6, 1)
 			np.put(base_rhythm_hihat[0], 8, 1)
 			np.put(base_rhythm_hihat[0], 10, 1)
-			np.put(base_rhythm_hihat[0], 12, 1)
-			np.put(base_rhythm_hihat[0], 14, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_hihat[0], 12, 1)
+				np.put(base_rhythm_hihat[0], 14, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_hihat[0], 16, 1)
+				np.put(base_rhythm_hihat[0], 18, 1)
 
 		if HI_HAT_OPEN_SYNC: 
 			np.put(base_rhythm_hihat[0], 2, 2)
 			np.put(base_rhythm_hihat[0], 6, 2)
 			np.put(base_rhythm_hihat[0], 10, 2)
-			np.put(base_rhythm_hihat[0], 14, 2)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_hihat[0], 14, 2)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_hihat[0], 16, 2)
 
 		if HI_HAT_CLOSED_SYNC: 
 			np.put(base_rhythm_hihat[0], 2, 1)
 			np.put(base_rhythm_hihat[0], 6, 1)
 			np.put(base_rhythm_hihat[0], 10, 1)
-			np.put(base_rhythm_hihat[0], 14, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_hihat[0], 14, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_hihat[0], 16, 1)
 
 		if HI_HAT_OPEN_QUARTERS: 
 			np.put(base_rhythm_hihat[0], 0, 2)
 			np.put(base_rhythm_hihat[0], 4, 2)
 			np.put(base_rhythm_hihat[0], 8, 2)
-			np.put(base_rhythm_hihat[0], 12, 2)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_hihat[0], 12, 2)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_hihat[0], 16, 2)
 
 		if HI_HAT_CLOSED_QUARTERS: 
 			np.put(base_rhythm_hihat[0], 0, 1)
 			np.put(base_rhythm_hihat[0], 4, 1)
 			np.put(base_rhythm_hihat[0], 8, 1)
-			np.put(base_rhythm_hihat[0], 12, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_hihat[0], 12, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_hihat[0], 16, 1)
 
 	if RIDE_ON: 
 
 		if RIDE_RANDOM and RIDE_REPEATED: 
 			micro_rhythm_ride = np.random.binomial(1, RIDE_PROB, size=(3,4))
-			base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
+			if TIME_SIG == 4:
+				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
+			elif TIME_SIG == 3: 
+				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
+			elif TIME_SIG == 5:
+				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1) 
 
 		elif RIDE_RANDOM: 
-			base_rhythm_ride = np.random.binomial(1, RIDE_PROB, size=(3,16))
+			base_rhythm_ride = np.random.binomial(1, RIDE_PROB, size=(3,NUM_16th_PER_BAR))
 
 		if RIDE_SIXTEENS: 
-			base_rhythm_ride = np.ones((3,16), dtype=np.int64)
+			base_rhythm_ride = np.ones((3,NUM_16th_PER_BAR), dtype=np.int64)
 
 		if RIDE_SYNC: 
 			np.put(base_rhythm_ride[0], 2, 1)
 			np.put(base_rhythm_ride[0], 6, 1)
 			np.put(base_rhythm_ride[0], 10, 1)
-			np.put(base_rhythm_ride[0], 14, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_ride[0], 14, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_ride[0], 16, 1)
 
 		if RIDE_QUARTERS: 
 			np.put(base_rhythm_ride[0], 0, 1)
 			np.put(base_rhythm_ride[0], 4, 1)
 			np.put(base_rhythm_ride[0], 8, 1)
-			np.put(base_rhythm_ride[0], 12, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_ride[0], 12, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_ride[0], 16, 1)
 
 		if RIDE_EIGHTS: 
 			np.put(base_rhythm_ride[0], 0, 1)
@@ -239,18 +305,29 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 			np.put(base_rhythm_ride[0], 6, 1)
 			np.put(base_rhythm_ride[0], 8, 1)
 			np.put(base_rhythm_ride[0], 10, 1)
-			np.put(base_rhythm_ride[0], 12, 1)
-			np.put(base_rhythm_ride[0], 14, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_ride[0], 12, 1)
+				np.put(base_rhythm_ride[0], 14, 1)
+			if NUM_16th_PER_BAR > 16:
+				np.put(base_rhythm_ride[0], 16, 1)
+				np.put(base_rhythm_ride[0], 18, 1)
 
 	if KICK_ON: 
 
 		if KICK_RANDOM and KICK_REPEATED: 
 
-			micro_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,8))
-			base_rhythm_kick = np.concatenate((micro_rhythm_kick, micro_rhythm_kick), axis=1)
+			if TIME_SIG == 4:
+				micro_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,8))
+				base_rhythm_kick = np.concatenate((micro_rhythm_kick, micro_rhythm_kick), axis=1)
+			elif TIME_SIG == 3: 
+				micro_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,6))
+				base_rhythm_kick = np.concatenate((micro_rhythm_kick, micro_rhythm_kick,), axis=1)
+			elif TIME_SIG == 5: 
+				micro_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,10))
+				base_rhythm_kick = np.concatenate((micro_rhythm_kick, nmicro_rhythm_kick,), axis=1)
 
 		elif KICK_RANDOM: 
-			base_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,16))
+			base_rhythm_kick = np.random.binomial(1, KICK_PROB, size=(3,NUM_16th_PER_BAR))
 
 		if KICK_ONE_THREE: 
 			np.put(base_rhythm_kick[0], 0, 1)
@@ -264,11 +341,18 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 			np.put(base_rhythm_kick[0], 11, 1)
 
 		if KICK_END: 
-			np.put(base_rhythm_kick[0], 14, 1)
+			if NUM_16th_PER_BAR == 16:
+				np.put(base_rhythm_kick[0], 14, 1)
+			elif NUM_16th_PER_BAR == 20:
+				np.put(base_rhythm_kick[0], 18, 1)
 
 		if KICK_DOUBLE_END: 
-			np.put(base_rhythm_kick[0], 14, 1)
-			np.put(base_rhythm_kick[0], 15, 1)
+			if NUM_16th_PER_BAR == 16:
+				np.put(base_rhythm_kick[0], 14, 1)
+				np.put(base_rhythm_kick[0], 15, 1)
+			if NUM_16th_PER_BAR == 20:
+				np.put(base_rhythm_kick[0], 18, 1)
+				np.put(base_rhythm_kick[0], 19, 1)
 
 		if KICK_WHEN_OPEN_HIHAT: 
 			indices = np.where(base_rhythm_hihat[0]>1.9)
@@ -276,17 +360,24 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 
 	if SNARE_ON: 
 		if SNARE_RANDOM and SNARE_REPEATED: 
-
-			micro_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,8))
-			base_rhythm_snare = np.concatenate((micro_rhythm_snare, micro_rhythm_snare), axis=1)
+			if TIME_SIG == 4: 
+				micro_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,8))
+				base_rhythm_snare = np.concatenate((micro_rhythm_snare, micro_rhythm_snare), axis=1)
+			elif TIME_SIG == 3: 
+				micro_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,6))
+				base_rhythm_snare = np.concatenate((micro_rhythm_snare, micro_rhythm_snare), axis=1)
+			elif TIME_SIG == 5: 
+				micro_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,10))
+				base_rhythm_snare = np.concatenate((micro_rhythm_snare, micro_rhythm_snare), axis=1)
 
 		elif SNARE_RANDOM: 
 
-			base_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,16))		
+			base_rhythm_snare = np.random.binomial(1, SNARE_PROB, size=(3,NUM_16th_PER_BAR))		
 
 		if SNARE_BACKBEAT: 
 			np.put(base_rhythm_snare[0], 4, 1)
-			np.put(base_rhythm_snare[0], 12, 1)
+			if NUM_16th_PER_BAR > 12:
+				np.put(base_rhythm_snare[0], 12, 1)
 
 		if SNARE_AMEN_1: 
 			np.put(base_rhythm_snare[0], 7, 1)
@@ -294,12 +385,19 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 		if SNARE_AMEN_2: 
 			np.put(base_rhythm_snare[0], 9, 1)
 
-		if SNARE_END: 
-			np.put(base_rhythm_snare[0], 14, 1)
+		if SNARE_END:
+			if NUM_16th_PER_BAR == 16: 
+				np.put(base_rhythm_snare[0], 14, 1)
+			elif NUM_16th_PER_BAR == 20: 
+				np.put(base_rhythm_snare[0], 18, 1)
 
 		if SNARE_DOUBLE_END: 
-			np.put(base_rhythm_snare[0], 14, 1)
-			np.put(base_rhythm_snare[0], 15, 1)
+			if NUM_16th_PER_BAR == 16: 
+				np.put(base_rhythm_snare[0], 14, 1)
+				np.put(base_rhythm_snare[0], 15, 1)
+			elif NUM_16th_PER_BAR == 20:
+				np.put(base_rhythm_snare[0], 18, 1)
+				np.put(base_rhythm_snare[0], 19, 1) 
 
 		if NO_KICK_WHEN_SNARE:
 			indices = np.where(base_rhythm_snare[0]>0.9)
@@ -312,59 +410,119 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 	if TOM_ON: 
 		if TOM_RANDOM and TOM_REPEATED: 
 
-			if TOM_REPEAT_UNIT == 4:
+			if NUM_16th_PER_BAR >= 4 and TOM_REPEAT_UNIT == 4:
 				print("----- HERE ----- ")
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,4))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,4))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,4))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1) 
-			
-			elif TOM_REPEAT_UNIT == 8: 
+
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1) 
+				
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1) 
+
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1) 
+
+			elif NUM_16th_PER_BAR >= 8 and TOM_REPEAT_UNIT == 8: 
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,8))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,8))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,8))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1)
-			elif TOM_REPEAT_UNIT == 3:
+
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1)
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, np.zeros((3,4), dtype=np.int64)), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, np.zeros((3,4), dtype=np.int64)), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, np.zeros((3,4), dtype=np.int64)), axis=1)
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,4), dtype=np.int64)), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,4), dtype=np.int64)), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,4), dtype=np.int64)), axis=1)
+			elif NUM_16th_PER_BAR >= 3 and TOM_REPEAT_UNIT == 3:
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,3))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,3))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,3))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
-			
-			elif TOM_REPEAT_UNIT == 5: 
+
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l ), axis=1)
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1)
+			elif NUM_16th_PER_BAR >= 5 and TOM_REPEAT_UNIT == 5: 
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,5))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,5))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,5))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
-			elif TOM_REPEAT_UNIT == 7: 
+
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,1), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,1), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,1), dtype=np.int64) ), axis=1) 
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1)
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l), axis=1)
+			elif NUM_16th_PER_BAR >= 7 and TOM_REPEAT_UNIT == 7: 
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,7))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,7))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,7))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1) 	
-			elif TOM_REPEAT_UNIT == 6: 
+
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1) 	
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, np.zeros((3,5), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m,  np.zeros((3,5), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, np.zeros((3,5), dtype=np.int64) ), axis=1)
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,6), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,6), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,6), dtype=np.int64) ), axis=1)
+			elif NUM_16th_PER_BAR >= 6 and TOM_REPEAT_UNIT == 6: 
 				micro_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,6))
-				base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,4), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,6))
-				base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,4), dtype=np.int64) ), axis=1)
 				micro_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,6))
-				base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,4), dtype=np.int64) ), axis=1) 
+				if TIME_SIG == 4:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,4), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,4), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,4), dtype=np.int64) ), axis=1) 
+				elif TIME_SIG == 3:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l ), axis=1)
+				elif TIME_SIG == 5:
+					base_rhythm_tom_h = np.concatenate((micro_rhythm_tom_h, micro_rhythm_tom_h, micro_rhythm_tom_h, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_m = np.concatenate((micro_rhythm_tom_m, micro_rhythm_tom_m, micro_rhythm_tom_m, np.zeros((3,2), dtype=np.int64) ), axis=1)
+					base_rhythm_tom_l = np.concatenate((micro_rhythm_tom_l, micro_rhythm_tom_l, micro_rhythm_tom_l, np.zeros((3,2), dtype=np.int64) ), axis=1)
 			else: 
 				print("repeat unit not accounted for")
 
 		elif TOM_RANDOM: 
 
-			base_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,16))
-			base_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,16))
-			base_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,16))
+			base_rhythm_tom_h = np.random.binomial(1, TOM_H_PROB, size=(3,NUM_16th_PER_BAR))
+			base_rhythm_tom_m = np.random.binomial(1, TOM_M_PROB, size=(3,NUM_16th_PER_BAR))
+			base_rhythm_tom_l = np.random.binomial(1, TOM_L_PROB, size=(3,NUM_16th_PER_BAR))
 
 		if TOM_MONOPHONIC: 
 			indices = np.where(base_rhythm_tom_m[0]>0.9)
@@ -374,9 +532,9 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 
 	if CRASH_ON:
 		if CRASH_RANDOM:  
-			base_rhythm_crash = np.random.binomial(1, CRASH_PROB, size=(3,16))
+			base_rhythm_crash = np.random.binomial(1, CRASH_PROB, size=(3,NUM_16th_PER_BAR))
 		else: 
-			base_rhythm_crash = np.zeros((3,16), dtype=np.int64)
+			base_rhythm_crash = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
 
 		if CRASH_ON_ONE: 
 			np.put(base_rhythm_crash[0], 0, 1)
@@ -414,54 +572,54 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 
 	if "ride" in whichPartsToCreate:
 		if not np.any(ride_part_fill): 
-			ride_part_fill = np.concatenate((base_rhythm_ride[:, 0:16-FILL_LENGTH], base_fill_ride), axis=1)	
+			ride_part_fill = np.concatenate((base_rhythm_ride[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_ride), axis=1)	
 		else: 
-			ride_part_fill = np.concatenate((base_rhythm_ride[:, 0:16-FILL_LENGTH], ride_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			ride_part_fill = np.concatenate((base_rhythm_ride[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], ride_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "crash" in whichPartsToCreate: 
 		if not np.any(crash_part_fill):
-			crash_part_fill = np.concatenate((base_rhythm_crash[:, 0:16-FILL_LENGTH], base_fill_crash), axis=1)
+			crash_part_fill = np.concatenate((base_rhythm_crash[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_crash), axis=1)
 		else: 
-			crash_part_fill = np.concatenate((base_rhythm_crash[:, 0:16-FILL_LENGTH], crash_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			crash_part_fill = np.concatenate((base_rhythm_crash[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], crash_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "hihat" in whichPartsToCreate:
 		if not np.any(hihat_part_fill):
-			hihat_part_fill = np.concatenate((base_rhythm_hihat[:, 0:16-FILL_LENGTH], base_fill_hihat), axis=1)
+			hihat_part_fill = np.concatenate((base_rhythm_hihat[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_hihat), axis=1)
 		else:
-			hihat_part_fill = np.concatenate((base_rhythm_hihat[:, 0:16-FILL_LENGTH], hihat_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			hihat_part_fill = np.concatenate((base_rhythm_hihat[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], hihat_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "tom_h" in whichPartsToCreate:
 		if not np.any(tom_h_part_fill):
-			tom_h_part_fill = np.concatenate((base_rhythm_tom_h[:, 0:16-FILL_LENGTH], base_fill_tom_H), axis=1)
+			tom_h_part_fill = np.concatenate((base_rhythm_tom_h[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_H), axis=1)
 		else:
-			tom_h_part_fill = np.concatenate((base_rhythm_tom_h[:, 0:16-FILL_LENGTH], tom_h_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			tom_h_part_fill = np.concatenate((base_rhythm_tom_h[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], tom_h_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "tom_m" in whichPartsToCreate:
 		if not np.any(tom_m_part_fill):
-			tom_m_part_fill =np.concatenate((base_rhythm_tom_m[:, 0:16-FILL_LENGTH], base_fill_tom_M), axis=1)
+			tom_m_part_fill =np.concatenate((base_rhythm_tom_m[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_M), axis=1)
 		else:
-			tom_m_part_fill = np.concatenate((base_rhythm_tom_m[:, 0:16-FILL_LENGTH], tom_m_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			tom_m_part_fill = np.concatenate((base_rhythm_tom_m[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], tom_m_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "tom_l" in whichPartsToCreate: 
 		if not np.any(tom_l_part_fill):
-			tom_l_part_fill = np.concatenate((base_rhythm_tom_l[:, 0:16-FILL_LENGTH], base_fill_tom_L), axis=1)
+			tom_l_part_fill = np.concatenate((base_rhythm_tom_l[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_L), axis=1)
 		else: 
-			tom_l_part_fill = np.concatenate((base_rhythm_tom_l[:, 0:16-FILL_LENGTH], tom_l_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			tom_l_part_fill = np.concatenate((base_rhythm_tom_l[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], tom_l_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "snare" in whichPartsToCreate: 
 		if not np.any(snare_part_fill):
-			snare_part_fill = np.concatenate((base_rhythm_snare[:, 0:16-FILL_LENGTH], base_fill_snare), axis=1)
+			snare_part_fill = np.concatenate((base_rhythm_snare[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_snare), axis=1)
 		else: 
-			snare_part_fill = np.concatenate((base_rhythm_snare[:, 0:16-FILL_LENGTH], snare_part_fill[:, 16-FILL_LENGTH:]), axis=1)
+			snare_part_fill = np.concatenate((base_rhythm_snare[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], snare_part_fill[:, NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	if "kick" in whichPartsToCreate: 
 		if not np.any(kick_part_fill):
-			kick_part_fill = np.concatenate((base_rhythm_kick[:, 0:16-FILL_LENGTH], base_fill_kick), axis=1)
+			kick_part_fill = np.concatenate((base_rhythm_kick[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_kick), axis=1)
 		else: 
-			kick_part_fill = np.concatenate((base_rhythm_kick[:, 0:16-FILL_LENGTH], kick_part_fill[:,16-FILL_LENGTH:]), axis=1)
+			kick_part_fill = np.concatenate((base_rhythm_kick[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], kick_part_fill[:,NUM_16th_PER_BAR-FILL_LENGTH:]), axis=1)
 	
 	if "fills"  in whichPartsToCreate: 
-		ride_part_fill = np.concatenate((ride_part_fill[:, 0:16-FILL_LENGTH], base_fill_ride), axis=1)
-		crash_part_fill = np.concatenate((crash_part_fill[:, 0:16-FILL_LENGTH], base_fill_crash), axis=1)
-		hihat_part_fill = np.concatenate((hihat_part_fill[:, 0:16-FILL_LENGTH], base_fill_hihat), axis=1)
-		tom_h_part_fill = np.concatenate((tom_h_part_fill[:, 0:16-FILL_LENGTH], base_fill_tom_H), axis=1)
-		tom_m_part_fill = np.concatenate((tom_m_part_fill[:, 0:16-FILL_LENGTH], base_fill_tom_M), axis=1)
-		tom_l_part_fill = np.concatenate((tom_l_part_fill[:, 0:16-FILL_LENGTH], base_fill_tom_L), axis=1)
-		snare_part_fill = np.concatenate((snare_part_fill[:, 0:16-FILL_LENGTH], base_fill_snare), axis=1)
-		kick_part_fill = np.concatenate((kick_part_fill[:, 0:16-FILL_LENGTH], base_fill_kick), axis=1)
+		ride_part_fill = np.concatenate((ride_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_ride), axis=1)
+		crash_part_fill = np.concatenate((crash_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_crash), axis=1)
+		hihat_part_fill = np.concatenate((hihat_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_hihat), axis=1)
+		tom_h_part_fill = np.concatenate((tom_h_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_H), axis=1)
+		tom_m_part_fill = np.concatenate((tom_m_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_M), axis=1)
+		tom_l_part_fill = np.concatenate((tom_l_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_L), axis=1)
+		snare_part_fill = np.concatenate((snare_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_snare), axis=1)
+		kick_part_fill = np.concatenate((kick_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_kick), axis=1)
 
 	# velocity
 	ride_part[1].fill(100)
@@ -507,7 +665,7 @@ def get(hihat_part = np.zeros((3,16), dtype=np.int64),
 def createDrumSegmentFromTwoParts(part_A_notes, part_A_velocity, part_A_onoff, 
 	part_B_notes, part_B_velocity, part_B_onoff, structure = "AAAB"): 
 
-	length = len(structure) * 16
+	length = len(structure) * NUM_16th_PER_BAR
 
 	drum_segment_notes = np.zeros((8,length), dtype=np.int64)
 	drum_segment_velocity = np.zeros((8,length), dtype=np.int64)
@@ -561,6 +719,36 @@ def createDrumSegmentFromTwoParts(part_A_notes, part_A_velocity, part_A_onoff,
 		drum_segment_velocity = np.concatenate((part_A_velocity, part_B_velocity, part_B_velocity), axis = 1)
 		drum_segment_onoff = np.concatenate((part_A_onoff, part_B_onoff, part_B_onoff), axis = 1)
 
+	elif structure == "AAAAB": 
+
+		drum_segment_notes = np.concatenate((part_A_notes, part_A_notes, part_A_notes, part_A_notes, part_B_notes), axis = 1)
+		drum_segment_velocity = np.concatenate((part_A_velocity, part_A_velocity, part_A_velocity, part_A_velocity, part_B_velocity), axis = 1)
+		drum_segment_onoff = np.concatenate((part_A_onoff, part_A_onoff, part_A_onoff, part_A_onoff, part_B_onoff), axis = 1)
+
+	elif structure == "AAABB": 
+
+		drum_segment_notes = np.concatenate((part_A_notes, part_A_notes, part_A_notes, part_B_notes, part_B_notes), axis = 1)
+		drum_segment_velocity = np.concatenate((part_A_velocity, part_A_velocity, part_A_velocity, part_B_velocity, part_B_velocity), axis = 1)
+		drum_segment_onoff = np.concatenate((part_A_onoff, part_A_onoff, part_A_onoff, part_B_onoff, part_B_onoff), axis = 1)
+
+	elif structure == "AABBA": 
+
+		drum_segment_notes = np.concatenate((part_A_notes, part_A_notes, part_B_notes, part_B_notes, part_A_notes), axis = 1)
+		drum_segment_velocity = np.concatenate((part_A_velocity, part_A_velocity, part_B_velocity, part_B_velocity, part_A_velocity), axis = 1)
+		drum_segment_onoff = np.concatenate((part_A_onoff, part_A_onoff, part_B_onoff, part_B_onoff, part_A_onoff), axis = 1)
+
+	elif structure == "ABBAA": 
+
+		drum_segment_notes = np.concatenate((part_A_notes, part_B_notes, part_B_notes, part_A_notes, part_A_notes), axis = 1)
+		drum_segment_velocity = np.concatenate((part_A_velocity, part_B_velocity, part_B_velocity, part_A_velocity, part_A_velocity), axis = 1)
+		drum_segment_onoff = np.concatenate((part_A_onoff, part_B_onoff, part_B_onoff, part_A_onoff, part_A_onoff), axis = 1)
+
+	elif structure == "ABABA": 
+
+		drum_segment_notes = np.concatenate((part_A_notes, part_B_notes, part_A_notes, part_B_notes, part_A_notes), axis = 1)
+		drum_segment_velocity = np.concatenate((part_A_velocity, part_B_velocity, part_A_velocity, part_B_velocity, part_A_velocity), axis = 1)
+		drum_segment_onoff = np.concatenate((part_A_onoff, part_B_onoff, part_A_onoff, part_B_onoff, part_A_onoff), axis = 1)
+
 	return drum_segment_notes, drum_segment_velocity, drum_segment_onoff
 
 
@@ -611,9 +799,9 @@ def compileDrumPart(hihat_part, ride_part, kick_part, snare_part, tom_h_part, to
 	# 6: tom_l
 	# 7: crash
 
-	drum_part_notes = np.zeros((8,16), dtype=np.int64)
-	drum_part_velocity = np.zeros((8,16), dtype=np.int64)
-	drum_part_onoff = np.ones((8,16), dtype=np.int64) # all 1's for percussive parts (?)
+	drum_part_notes = np.zeros((8,NUM_16th_PER_BAR), dtype=np.int64)
+	drum_part_velocity = np.zeros((8,NUM_16th_PER_BAR), dtype=np.int64)
+	drum_part_onoff = np.ones((8,NUM_16th_PER_BAR), dtype=np.int64) # all 1's for percussive parts (?)
 
 	print("---------------------")
 	print(drum_part_notes.shape)

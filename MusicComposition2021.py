@@ -74,6 +74,7 @@ while selection != 'q' and selection != 'n':
 	print("1: create new high tom part")
 	print("2: create new mid tom part")
 	print("3: create new low tom part")
+	print("t: create all new tom parts")
 	print("c: create new crash part")
 	print("f: create new fills")
 	print("q: quit")
@@ -102,6 +103,10 @@ while selection != 'q' and selection != 'n':
 			whichPartsToCreate.append("tom_m")
 		elif selection == "3": 
 			whichPartsToCreate.append("tom_l")
+		elif selection == "t": 
+			whichPartsToCreate.append("tom_l")
+			whichPartsToCreate.append("tom_m")
+			whichPartsToCreate.append("tom_h")
 		elif selection == "c": 
 			whichPartsToCreate.append("crash")
 
@@ -170,6 +175,11 @@ print("5: ABBA")
 print("6: AAB")
 print("7: ABA")
 print("8: ABB")
+print("9: AAAAB")
+print("10: AAABB")
+print("11: AABBA")
+print("12: ABBAA")
+print("13: ABABA")
 structure_selection = input("Selection: ")
 
 if structure_selection == "1": 
@@ -188,6 +198,16 @@ elif structure_selection == "7":
 	structure = "ABA"
 elif structure_selection == "8": 
 	structure = "ABB"
+elif structure_selection == "9": 
+	structure = "AAAAB"
+elif structure_selection == "10": 
+	structure = "AAABB"
+elif structure_selection == "11": 
+	structure = "AABBA"
+elif structure_selection == "12": 
+	structure = "ABBAA"
+elif structure_selection == "13": 
+	structure = "ABABA"
 
 drum_segment_notes, drum_segment_velocity, drum_segment_onoff = \
 	drumPart.createDrumSegmentFromTwoParts(drum_part_notes, drum_part_velocity, drum_part_onoff, \
