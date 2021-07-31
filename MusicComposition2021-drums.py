@@ -23,17 +23,55 @@ drum_notes = np.zeros((8,0), dtype=np.int64)
 drum_velocity = np.zeros((8,0), dtype=np.int64)
 drum_onoff = np.ones((8,0), dtype=np.int64) # all 1's for percussive parts (?)
 
+print("--- Initialize beat ---")
+print("Options: ")
+print("a: automatically create all new parts")
+print("h: input hihat part")
+print("r: input ride part")
+print("k: input kick part")
+print("s: input snare part")
+
+initial_selection = input("Selection: ")
+
+if initial_selection == 'a': 
+	user_input = [[], []]
+elif initial_selection == 'h': 
+	user_input_str = input("Input hihat groove (consisting of " + str(TIME_SIG * 4) + " 0's, 1's and 2's): ")
+	user_input = [['h'], [user_input_str]]
+elif initial_selection == 'r': 
+	user_input_str = input("Input ride groove (consisting of " + str(TIME_SIG * 4) + " 0's, 1's): ")
+	user_input = [['r'], [user_input_str]]
+elif initial_selection == 'k': 
+	user_input_str = input("Input kick groove (consisting of " + str(TIME_SIG * 4) + " 0's, 1's): ")
+	user_input = [['k'], [user_input_str]]
+elif initial_selection == 's': 
+	user_input_str = input("Input snare groove (consisting of " + str(TIME_SIG * 4) + " 0's, 1's): ")
+	user_input = [['s'], [user_input_str]]
+else:
+	print("Selection not recognized")
+
 repititions = 5
 
 i = 0 
 while i < repititions: 
 
-	whichPartsToCreate = ["hihat", "ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
+	if initial_selection == 'a': 
+		whichPartsToCreate = ["hihat", "ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
+	elif initial_selection == 'h': 
+		whichPartsToCreate = ["ride", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
+	elif initial_selection == 'r': 
+		whichPartsToCreate = ["hihat", "kick", "snare", "tom_h", "tom_m", "tom_l", "crash"]
+	elif initial_selection == 'k': 
+		whichPartsToCreate = ["hihat", "ride", "snare", "tom_h", "tom_m", "tom_l", "crash"]
+	elif initial_selection == 's': 
+		whichPartsToCreate = ["hihat", "ride", "kick", "tom_h", "tom_m", "tom_l", "crash"]
+	else:
+		print("Selection not recognized")
 
 	hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, \
 	hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, \
 	tom_l_part_fill, crash_part_fill = \
-		drumPart.get(whichPartsToCreate=whichPartsToCreate)
+		drumPart.get(whichPartsToCreate=whichPartsToCreate, user_input=user_input)
 
 	print("Without fill: ")
 	print(crash_part[0])
@@ -126,6 +164,8 @@ while i < repititions:
 				whichPartsToCreate.append("tom_h")
 			elif selection == "c": 
 				whichPartsToCreate.append("crash")
+			else: 
+				print("Selection not recognized")
 
 		hihat_part, ride_part, kick_part, snare_part, tom_h_part, tom_m_part, tom_l_part, crash_part, \
 			hihat_part_fill, ride_part_fill, kick_part_fill, snare_part_fill, tom_h_part_fill, tom_m_part_fill, \
@@ -225,6 +265,8 @@ while i < repititions:
 		structure = "ABBAA"
 	elif structure_selection == "13": 
 		structure = "ABABA"
+	else:
+		print("Selection not recognized")
 
 	drum_segment_notes, drum_segment_velocity, drum_segment_onoff = \
 		drumPart.createDrumSegmentFromTwoParts(drum_part_notes, drum_part_velocity, drum_part_onoff, \

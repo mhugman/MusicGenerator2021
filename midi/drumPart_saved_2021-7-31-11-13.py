@@ -570,28 +570,6 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 	if "kick" in whichPartsToCreate:
 		kick_part = base_rhythm_kick
 
-	# Logic will have to change for multiple user inputs
-	if len(user_input[0]) > 0 and len(user_input[1]) > 0: 
-
-		user_input_str = user_input[1][0]
-		user_input_int = []
-
-		for c in list(user_input_str): 
-			user_input_int.append(int(c))
-
-		if user_input[0][0] == 'h': 
-			hihat_part[0] = np.array(user_input_int)
-			hihat_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 'r': 
-			ride_part[0] = np.array(user_input_int)
-			ride_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 'k': 
-			kick_part[0] = np.array(user_input_int)
-			kick_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 's': 
-			snare_part[0] = np.array(user_input_int)
-			snare_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-
 	# add new base rythms to existing fills, or create brand new fill parts if they don't exist
 
 	if "ride" in whichPartsToCreate:
@@ -644,6 +622,24 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 		tom_l_part_fill = np.concatenate((tom_l_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_tom_L), axis=1)
 		snare_part_fill = np.concatenate((snare_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_snare), axis=1)
 		kick_part_fill = np.concatenate((kick_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_kick), axis=1)
+
+	# Logic will have to change for multiple user inputs
+	if len(user_input[0]) > 0 and len(user_input[1]) > 0: 
+
+		user_input_str = user_input[1][0]
+		user_input_int = []
+
+		for c in list(user_input_str): 
+			user_input_int.append(int(c))
+
+		if user_input[0][0] == 'h': 
+			hihat_part[0] = np.array(user_input_int)
+		elif user_input[0][0] == 'r': 
+			ride_part[0] = np.array(user_input_int)
+		elif user_input[0][0] == 'k': 
+			kick_part[0] = np.array(user_input_int)
+		elif user_input[0][0] == 's': 
+			snare_part[0] = np.array(user_input_int)
 
 	# velocity
 	ride_part[1].fill(RIDE_VOL)

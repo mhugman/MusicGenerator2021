@@ -34,28 +34,28 @@ FILL_LENGTH = 8 # MAX 16
 
 # Switches
 
-HI_HAT_ON = False
-RIDE_ON = True
+HI_HAT_ON = True
+RIDE_ON = False
 KICK_ON = True
 TOM_ON = False
 SNARE_ON = True
 CRASH_ON = True
 
 HI_HAT_REPEATED = True
-RIDE_REPEATED = True
+RIDE_REPEATED = False
 KICK_REPEATED = True
 TOM_REPEATED = False
 SNARE_REPEATED = True
 
 # Number of 16th notes to form one chunk to be repeated
 HI_HAT_REPEAT_UNIT = 3
-RIDE_REPEAT_UNIT = 3
-KICK_REPEAT_UNIT = 5
+RIDE_REPEAT_UNIT = 4
+KICK_REPEAT_UNIT = 4
 TOM_REPEAT_UNIT = 5
-SNARE_REPEAT_UNIT = 8
+SNARE_REPEAT_UNIT = 5
 
 HI_HAT_RANDOM = True
-RIDE_RANDOM = True
+RIDE_RANDOM = False
 KICK_RANDOM = True
 SNARE_RANDOM = True
 TOM_RANDOM = False
@@ -68,7 +68,7 @@ HI_HAT_OPEN_BACKBEAT = False
 HI_HAT_CLOSED_SYNC = False
 HI_HAT_OPEN_QUARTERS = False
 HI_HAT_CLOSED_QUARTERS = False
-HI_HAT_CLOSED_EIGHTS = False
+HI_HAT_CLOSED_EIGHTS = True
 HI_HAT_CLOSED_SIXTEENS = False
 
 RIDE_QUARTERS = False
@@ -77,15 +77,15 @@ RIDE_SIXTEENS = False
 RIDE_SYNC = False
 
 KICK_ONE_THREE = True
-KICK_LEAD_FOUR = True
+KICK_LEAD_FOUR = False
 KICK_LEAD_DOUBLE_FOUR = True
 KICK_END = False
 KICK_DOUBLE_END = True
 
 SNARE_BACKBEAT = True
 SNARE_AMEN_1 = True
-SNARE_AMEN_2 = True
-SNARE_END = True
+SNARE_AMEN_2 = False
+SNARE_END = False
 SNARE_DOUBLE_END = False
 
 NO_SNARE_WHEN_OPEN_HIHAT = False
@@ -95,10 +95,10 @@ KICK_WHEN_OPEN_HIHAT = False
 CRASH_ON_ONE = True  
 TOM_MONOPHONIC = True
 
-RIDE_VOL = 85
-HIHAT_VOL = 90
-KICK_VOL = 95
-SNARE_VOL = 85
+RIDE_VOL = 75
+HIHAT_VOL = 75
+KICK_VOL = 100
+SNARE_VOL = 100
 CRASH_VOL = 50
 TOM_VOL = 75
 
@@ -119,9 +119,7 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 	tom_l_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64), 
 	crash_part_fill = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),  
 
-	whichPartsToCreate = [], 
-
-	user_input = [[], []]
+	whichPartsToCreate = []
 	): 
 	 
 	base_rhythm_hihat = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64)
@@ -570,28 +568,6 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 	if "kick" in whichPartsToCreate:
 		kick_part = base_rhythm_kick
 
-	# Logic will have to change for multiple user inputs
-	if len(user_input[0]) > 0 and len(user_input[1]) > 0: 
-
-		user_input_str = user_input[1][0]
-		user_input_int = []
-
-		for c in list(user_input_str): 
-			user_input_int.append(int(c))
-
-		if user_input[0][0] == 'h': 
-			hihat_part[0] = np.array(user_input_int)
-			hihat_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 'r': 
-			ride_part[0] = np.array(user_input_int)
-			ride_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 'k': 
-			kick_part[0] = np.array(user_input_int)
-			kick_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-		elif user_input[0][0] == 's': 
-			snare_part[0] = np.array(user_input_int)
-			snare_part_fill[0, 0:NUM_16th_PER_BAR-FILL_LENGTH] = np.array(user_input_int)[0:NUM_16th_PER_BAR-FILL_LENGTH]
-
 	# add new base rythms to existing fills, or create brand new fill parts if they don't exist
 
 	if "ride" in whichPartsToCreate:
@@ -646,23 +622,23 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 		kick_part_fill = np.concatenate((kick_part_fill[:, 0:NUM_16th_PER_BAR-FILL_LENGTH], base_fill_kick), axis=1)
 
 	# velocity
-	ride_part[1].fill(RIDE_VOL)
-	crash_part[1].fill(CRASH_VOL)
-	hihat_part[1].fill(HIHAT_VOL)
-	tom_h_part[1].fill(TOM_VOL)
-	tom_m_part[1].fill(TOM_VOL)
-	tom_l_part[1].fill(TOM_VOL)
-	snare_part[1].fill(SNARE_VOL)
-	kick_part[1].fill(KICK_VOL)
+	ride_part[1].fill(100)
+	crash_part[1].fill(100)
+	hihat_part[1].fill(100)
+	tom_h_part[1].fill(100)
+	tom_m_part[1].fill(100)
+	tom_l_part[1].fill(100)
+	snare_part[1].fill(100)
+	kick_part[1].fill(100)
 
-	ride_part_fill[1].fill(RIDE_VOL)
-	crash_part_fill[1].fill(CRASH_VOL)
-	hihat_part_fill[1].fill(HIHAT_VOL)
-	tom_h_part_fill[1].fill(TOM_VOL)
-	tom_m_part_fill[1].fill(TOM_VOL)
-	tom_l_part_fill[1].fill(TOM_VOL)
-	snare_part_fill[1].fill(SNARE_VOL)
-	kick_part_fill[1].fill(KICK_VOL)
+	ride_part_fill[1].fill(100)
+	crash_part_fill[1].fill(100)
+	hihat_part_fill[1].fill(100)
+	tom_h_part_fill[1].fill(100)
+	tom_m_part_fill[1].fill(100)
+	tom_l_part_fill[1].fill(100)
+	snare_part_fill[1].fill(100)
+	kick_part_fill[1].fill(100)
 
 	# on-off
 	ride_part[2].fill(1)
