@@ -14,6 +14,8 @@ TEMPO = 126
 MAX_SUSTAIN = 200 # maximum time to sustain a note before it gets removed
 MIN_LENGTH = 100
 
+TIME_SIG = 4
+
 
 NUM_TRACKS = NUM_MIDI_TRACKS * MAX_POLYPHONY
 
@@ -44,6 +46,8 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename):
             track = mid.tracks[i]
 
             track.append(MetaMessage('set_tempo', tempo=adjTempo, time=0))
+            track.append(MetaMessage('time_signature', numerator = TIME_SIG, denominator = 4, clocks_per_click = 24, notated_32nd_notes_per_beat = 8))
+
             
             #track.append(Message('control_change', channel = 1, control=0, value=0, time=0))
 
