@@ -5,14 +5,12 @@ from mido import MidiFile
 from mido.midifiles import MidiTrack
 from mido import MetaMessage
 from mido import Message
-
-SONG_LENGTH = 200
-TEMPO = 126
+from globals import SONG_LENGTH
+from globals import TEMPO
+from globals import TIME_SIG
 
 MAX_SUSTAIN = 200 # maximum time to sustain a note before it gets removed
 MIN_LENGTH = 100
-
-TIME_SIG = 4
 
 NUM_TRACKS = 8
 

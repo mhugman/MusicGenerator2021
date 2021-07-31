@@ -1,0 +1,4 @@
+TIME_SIG = 4  # 4 = 4/4, 5 = 5/4, 3 = 3/4
+NUM_BARS_IN_PART = 4
+SONG_LENGTH = 200
+TEMPO = 126
