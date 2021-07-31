@@ -6,9 +6,7 @@ from mido.midifiles import MidiTrack
 from mido import MetaMessage
 from mido import Message
 
-SONG_LENGTH = 500
-MAX_POLYPHONY = 10
-NUM_MIDI_TRACKS = 1
+SONG_LENGTH = 200
 TEMPO = 126
 
 MAX_SUSTAIN = 200 # maximum time to sustain a note before it gets removed
@@ -16,8 +14,7 @@ MIN_LENGTH = 100
 
 TIME_SIG = 4
 
-
-NUM_TRACKS = NUM_MIDI_TRACKS * MAX_POLYPHONY
+NUM_TRACKS = 8
 
 def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename): 
 
@@ -169,12 +166,10 @@ def parseMidi(mid):
                 
                 if message.type == "note_on" or message.type == "note_off":
                     prevTime = currentTime
+                    currentTime = currentTime + round(message.time / 120)
 
-                    #print("prevTime: ", prevTime)
-                    currentTime = currentTime + message.time
+                    #print("Current time: " + str(currentTime))
 
-                    #print("currentTime: ", currentTime)
-                    
                     # previous notes are the same as (not yet updated) current notes, 
                     # but the third value is 0 instead of 1 (denoting the fact that 
                     # the note is sustained, rather than hit)
@@ -182,62 +177,42 @@ def parseMidi(mid):
                     for x in currentNotes: 
                          prevNotes.append((x[0], x[1], 0))
                     
-                    #print("prevNotes: ", prevNotes)
-                    
                     # Fill in all the values since the previous message, and up to 
                     # but not including the time of the current message, with the
                     # previous notes
+                    '''
                     if len(prevNotes) > 0:     
                         deltaTime = currentTime - prevTime
                         for j in range(0, deltaTime - 1): 
-                            # Polyphony: add additional notes to extra tracks
-                            for k in range(MAX_POLYPHONY): 
-                                try:     
-                                    noteArray[i + k * NUM_MIDI_TRACKS][currentTime - 1 - j] = prevNotes[k][0]
-                                    #print("filling in this note: ", prevNotes[0][0])
-                                    velocityArray[i + k * NUM_MIDI_TRACKS][currentTime - 1 - j] = prevNotes[k][1]
-                                    #print("with this velocity: ", prevNotes[0][1])
-                                    onOffArray[i + k * NUM_MIDI_TRACKS][currentTime - 1 - j] = prevNotes[k][2]
-                                except: 
-                                    pass
-                    
+
+                            noteArray[i][currentTime - 1 - j] = prevNotes[0][0]
+                            velocityArray[i][currentTime - 1 - j] = prevNotes[0][1]
+                            onOffArray[i][currentTime - 1 - j] = prevNotes[0][2]
+                    '''
+
                     # update the current Notes being played with the information in the
                     # message
                     if message.type == "note_on": 
                                 
-                        currentNotes.append((message.note + 1, message.velocity,1))
+                        currentNotes.append((message.note, message.velocity,1))
 
-                        delQ.append((message.note + 1, message.velocity,1))
+                        delQ.append((message.note, message.velocity,1))
                         timeQ.append(MAX_SUSTAIN)
-
-
-                        #print("currentNotes: ", currentNotes)
 
                         # fill in the value for this particular time with the current Notes
                         if len(currentNotes) > 0:  
-                            for k in range(MAX_POLYPHONY): 
-                                
-                                if k < len(currentNotes) and currentNotes[k][0] == message.note + 1: 
-                                    try:  
-                                        noteArray[i + k * NUM_MIDI_TRACKS][currentTime] = np.asarray(currentNotes[k][0])
-                                        velocityArray[i + k * NUM_MIDI_TRACKS][currentTime] = np.asarray(currentNotes[k][1])
-                                        onOffArray[i + k * NUM_MIDI_TRACKS][currentTime] = np.asarray(currentNotes[k][2])
-                                    except: 
-                                        #raise ValueError(message, i, currentTime, currentNotes)
-                                        pass
 
-
-                    
-                    elif message.type == "note_off": 
+                            noteArray[i][currentTime] = np.asarray(currentNotes[0][0])
+                            velocityArray[i][currentTime] = np.asarray(currentNotes[0][1])
+                            onOffArray[i][currentTime] = np.asarray(currentNotes[0][2])
+                     
                         for x in currentNotes: 
-                            if x[0] == message.note + 1: 
+                            if x[0] == message.note: 
                                 try: 
                                     x_idx = delQ.index(x)
                                     delQ.pop(x_idx)
                                     timeQ.pop(x_idx)
                                     currentNotes.remove(x)
-
-
                                 except: 
 
                                     print("timeQ: ", timeQ)
@@ -245,20 +220,6 @@ def parseMidi(mid):
 
 
                             ## TO DO : add -1 to onOffArray in appropriate place
-
-
-                                
-
-                        #currentNotes.remove((message.note + 1, message.velocity))   
-
-                    
-                     
-                    
-                    
-                    #print("noteArray: ", noteArray[:,:currentTime])
-                    #print("velocityArray: ", velocityArray[:,:currentTime])
-                
-
                 
                 timeQ = [x - 1 for x in timeQ]
 
@@ -273,5 +234,33 @@ def parseMidi(mid):
                     delQ.pop(zeroIdx)
                     timeQ.pop(zeroIdx)
 
-    #raise ValueError(noteArray.shape[1])            
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+    indices_5 = np.argwhere(noteArray[0] == 36)
+    noteArray[0][indices_5] = 1
+
+    indices_3 = np.argwhere(noteArray[1] == 38)
+    noteArray[1][indices_3] = 1
+
+    indices_1 = np.argwhere(noteArray[2] == 46)
+    noteArray[2][indices_1] = 2
+
+    indices_2 = np.argwhere(noteArray[2] == 42)
+    noteArray[2][indices_2] = 1
+
+    indices_4 = np.argwhere(noteArray[3] == 51)
+    noteArray[3][indices_4] = 1
+
+    indices_6 = np.argwhere(noteArray[4] == 48)
+    noteArray[4][indices_6] = 1
+
+    indices_7 = np.argwhere(noteArray[5] == 47)
+    noteArray[5][indices_7] = 1
+
+    indices_8 = np.argwhere(noteArray[6] == 41)
+    noteArray[6][indices_8] = 1
+
+    indices_9 = np.argwhere(noteArray[7] == 49)
+    noteArray[7][indices_9] = 1
+
     return noteArray, velocityArray, onOffArray

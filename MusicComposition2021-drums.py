@@ -50,7 +50,7 @@ elif initial_selection == 's':
 else:
 	print("Selection not recognized")
 
-repititions = 5
+repititions = 1
 
 i = 0 
 while i < repititions: 
@@ -289,7 +289,7 @@ while i < repititions:
 
 	noteArray, velocityArray, onOffArray = midiFunctions.parseMidi(mido.MidiFile('midi/' + filename + '.mid'))
 
-	"""
+	print("Reconverted array: ")
 	print(noteArray[0])
 	print("----")
 	print(noteArray[1])
@@ -306,7 +306,6 @@ while i < repititions:
 	print("----")
 	print(noteArray[7])
 	print("----")
-	"""
 
 	drum_notes = np.concatenate((drum_notes, drum_segment_notes, np.zeros((8,TIME_SIG * 4), dtype=np.int64)), axis = 1)
 	drum_velocity = np.concatenate((drum_velocity, drum_segment_velocity, np.zeros((8, TIME_SIG * 4), dtype=np.int64)), axis = 1)
