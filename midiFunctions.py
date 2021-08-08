@@ -14,7 +14,7 @@ MIN_LENGTH = 100
 
 NUM_TRACKS = 8
 
-def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename): 
+def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename, instrument = "Piano"): 
 
     adjTempo = int(round(60000000 / tempo))
 
@@ -47,7 +47,12 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename):
             #track.append(Message('control_change', channel = 1, control=0, value=0, time=0))
 
             # Drums
-            track.append(Message('program_change', channel = 10, program=1, time=0))
+            if instrument == "Drums": 
+                track.append(Message('program_change', channel = 10, program=1, time=0))
+            elif instrument == "Piano": 
+                track.append(Message('program_change', channel = 0, program=0, time=0))
+            else: 
+                print("instrument not recognized")
             '''
             if i >= 0 and i < 3: 
                 # Grand Piano
@@ -98,14 +103,13 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename):
                     noteVelocity = 127
                     
                     
-                if onOff > 0.6 and noteValue > 0 : 
+                if onOff > 0.9 and onOff < 1.1 and noteValue > 0 : 
 
                     track.append(Message('note_on', channel = 1, note= noteValue, velocity=noteVelocity, time=timeSinceLastMessage))
                     messageGenerated = True
 
-                elif onOff < -0.6: 
+                elif onOff > 1.9 and onOff < 2.1: 
                      
-
                     track.append(Message('note_off', channel = 1, note= noteValue, velocity=noteVelocity, time=timeSinceLastMessage))
                     messageGenerated = True
 

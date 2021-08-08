@@ -284,7 +284,7 @@ while i < repititions:
 
 	filename = "drumPart" + timestamp +  "_" + str(i)
 
-	midiFunctions.createMidiFile(drum_segment_notes, drum_segment_velocity, drum_segment_onoff, 80, filename)
+	midiFunctions.createMidiFile(drum_segment_notes, drum_segment_velocity, drum_segment_onoff, 80, filename, "Drums")
 
 	noteArray, velocityArray, onOffArray = midiFunctions.parseMidi(mido.MidiFile('midi/' + filename + '.mid'))
 
@@ -312,6 +312,6 @@ while i < repititions:
 
 	i+= 1
 
-midiFunctions.createMidiFile(drum_notes, drum_velocity, drum_onoff, 80, "drumPart_final" + timestamp)
+midiFunctions.createMidiFile(drum_notes, drum_velocity, drum_onoff, 80, "drumPart_final" + timestamp, "Drums")
 
 shutil.copyfile("drumPart.py", "midi/drumPart_saved" + timestamp + ".py")

@@ -262,6 +262,6 @@ drum_complete_notes, drum_complete_velocity, drum_complete_onoff = \
 
 completefilename = "drumComplete_" + filename + timestamp 
 
-midiFunctions.createMidiFile(drum_complete_notes, drum_complete_velocity, drum_complete_onoff, 80, completefilename)
+midiFunctions.createMidiFile(drum_complete_notes, drum_complete_velocity, drum_complete_onoff, 80, completefilename, "Drums")
 
 	
