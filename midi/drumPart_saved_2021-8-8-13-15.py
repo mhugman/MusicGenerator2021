@@ -3,9 +3,10 @@
 
 import numpy as np
 import itertools
-from globals import TIME_SIG
 
 np.set_printoptions(linewidth=150)
+
+TIME_SIG = 4  # 4 = 4/4, 5 = 5/4, 3 = 3/4
 
 NUM_16th_PER_BAR = TIME_SIG * 4
 
@@ -48,7 +49,7 @@ SNARE_REPEATED = True
 
 # Number of 16th notes to form one chunk to be repeated
 HI_HAT_REPEAT_UNIT = 3
-RIDE_REPEAT_UNIT = 5
+RIDE_REPEAT_UNIT = 3
 KICK_REPEAT_UNIT = 5
 TOM_REPEAT_UNIT = 5
 SNARE_REPEAT_UNIT = 8
@@ -75,17 +76,17 @@ RIDE_EIGHTS = False
 RIDE_SIXTEENS = False
 RIDE_SYNC = False
 
-KICK_ONE_THREE = False
-KICK_LEAD_FOUR = False
-KICK_LEAD_DOUBLE_FOUR = False
+KICK_ONE_THREE = True
+KICK_LEAD_FOUR = True
+KICK_LEAD_DOUBLE_FOUR = True
 KICK_END = False
-KICK_DOUBLE_END = False
+KICK_DOUBLE_END = True
 
 SNARE_BACKBEAT = True
 SNARE_AMEN_1 = True
-SNARE_AMEN_2 = False
-SNARE_END = False
-SNARE_DOUBLE_END = True
+SNARE_AMEN_2 = True
+SNARE_END = True
+SNARE_DOUBLE_END = False
 
 NO_SNARE_WHEN_OPEN_HIHAT = False
 NO_KICK_WHEN_SNARE = True
@@ -267,69 +268,13 @@ def get(hihat_part = np.zeros((3,NUM_16th_PER_BAR), dtype=np.int64),
 	if RIDE_ON: 
 
 		if RIDE_RANDOM and RIDE_REPEATED: 
-			'''
 			micro_rhythm_ride = np.random.binomial(1, RIDE_PROB, size=(3,4))
 			if TIME_SIG == 4:
 				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
 			elif TIME_SIG == 3: 
 				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
 			elif TIME_SIG == 5:
-				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-			'''
-			if NUM_16th_PER_BAR >= 4 and RIDE_REPEAT_UNIT == 4: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,4))
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-				elif TIME_SIG == 5: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-			elif NUM_16th_PER_BAR >= 8 and RIDE_REPEAT_UNIT == 8: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,8))
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, np.zeros((3,4), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 5: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,4), dtype=np.int64)), axis=1)
-
-			elif NUM_16th_PER_BAR >= 3 and RIDE_REPEAT_UNIT == 3: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,3))
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,1), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-				elif TIME_SIG == 5: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,2), dtype=np.int64)), axis=1)
-			elif NUM_16th_PER_BAR >= 5 and RIDE_REPEAT_UNIT == 5: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,5))
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,1), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,2), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 5: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1)
-			elif NUM_16th_PER_BAR >= 7 and RIDE_REPEAT_UNIT == 7: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,7))
-				
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,2), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, np.zeros((3,5), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 5 : 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,6), dtype=np.int64)), axis=1)
-
-			elif NUM_16th_PER_BAR >= 6 and RIDE_REPEAT_UNIT == 6: 
-				micro_rhythm_ride = np.random.binomial(2, RIDE_PROB, size=(3,7))
-				if TIME_SIG == 4: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,4), dtype=np.int64)), axis=1)
-				elif TIME_SIG == 3: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride), axis=1)
-				elif TIME_SIG == 5: 
-					base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, np.zeros((3,2), dtype=np.int64)), axis=1)
-
-			else: 
-				print("repeat unit not accounted for") 
+				base_rhythm_ride = np.concatenate((micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride, micro_rhythm_ride), axis=1) 
 
 		elif RIDE_RANDOM: 
 			base_rhythm_ride = np.random.binomial(1, RIDE_PROB, size=(3,NUM_16th_PER_BAR))

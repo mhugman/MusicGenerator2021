@@ -9,8 +9,7 @@ import mido
 import sys
 from datetime import datetime
 import shutil
-
-TIME_SIG = 4
+from globals import TIME_SIG
 
 now = datetime.now()
 
@@ -50,7 +49,7 @@ elif initial_selection == 's':
 else:
 	print("Selection not recognized")
 
-repititions = 1
+repititions = 5
 
 i = 0 
 while i < repititions: 
