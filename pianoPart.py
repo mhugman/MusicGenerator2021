@@ -285,17 +285,19 @@ def get(scaleDegrees = [1,5,8,12]) :
 
 def compilePianoPart(bass_part, treble_part, key = "C"): 
 
-	if key == "C": 
+	
 
-		noteDict_0 = {}
-		noteDict_1 = {}
-		noteDict_2 = {}
-		noteDict_3 = {}
-		noteDict_4 = {}
-		noteDict_5 = {}
-		noteDict_6 = {}
-		noteDict_7 = {}
-		noteDict_8 = {}
+	noteDict_0 = {}
+	noteDict_1 = {}
+	noteDict_2 = {}
+	noteDict_3 = {}
+	noteDict_4 = {}
+	noteDict_5 = {}
+	noteDict_6 = {}
+	noteDict_7 = {}
+	noteDict_8 = {}
+
+	if key == "C": 
 
 		startingNote_0 = 0
 		startingNote_1 = 12
@@ -306,20 +308,131 @@ def compilePianoPart(bass_part, treble_part, key = "C"):
 		startingNote_6 = 72
 		startingNote_7 = 84
 		startingNote_8 = 96
+	elif key == "C#": 
 
-		for i in range(23): 
-			noteDict_0[i + 1] = startingNote_0 + i
-			noteDict_1[i + 1] = startingNote_1 + i
-			noteDict_2[i + 1] = startingNote_2 + i
-			noteDict_3[i + 1] = startingNote_3 + i
-			noteDict_4[i + 1] = startingNote_4 + i
-			noteDict_5[i + 1] = startingNote_5 + i
-			noteDict_6[i + 1] = startingNote_6 + i
-			noteDict_7[i + 1] = startingNote_7 + i
-			noteDict_8[i + 1] = startingNote_8 + i
+		startingNote_0 = 1
+		startingNote_1 = 13
+		startingNote_2 = 25
+		startingNote_3 = 37
+		startingNote_4 = 49
+		startingNote_5 = 61
+		startingNote_6 = 73
+		startingNote_7 = 85
+		startingNote_8 = 97
+	elif key == "D": 
+		startingNote_0 = 2
+		startingNote_1 = 14
+		startingNote_2 = 26
+		startingNote_3 = 38
+		startingNote_4 = 50
+		startingNote_5 = 62
+		startingNote_6 = 74
+		startingNote_7 = 86
+		startingNote_8 = 98
+	elif key == "Eb": 
+		startingNote_0 = 3
+		startingNote_1 = 15
+		startingNote_2 = 27
+		startingNote_3 = 39
+		startingNote_4 = 51
+		startingNote_5 = 63
+		startingNote_6 = 75
+		startingNote_7 = 87
+		startingNote_8 = 99
+	elif key == "E": 
+		startingNote_0 = 4
+		startingNote_1 = 16
+		startingNote_2 = 28
+		startingNote_3 = 40
+		startingNote_4 = 52
+		startingNote_5 = 64
+		startingNote_6 = 76
+		startingNote_7 = 88
+		startingNote_8 = 100
+	elif key == "F": 
+		startingNote_0 = 5
+		startingNote_1 = 17
+		startingNote_2 = 29
+		startingNote_3 = 41
+		startingNote_4 = 53
+		startingNote_5 = 65
+		startingNote_6 = 77
+		startingNote_7 = 89
+		startingNote_8 = 101
+	elif key == "F#": 
+		startingNote_0 = 6
+		startingNote_1 = 18
+		startingNote_2 = 30
+		startingNote_3 = 42
+		startingNote_4 = 54
+		startingNote_5 = 66
+		startingNote_6 = 78
+		startingNote_7 = 90
+		startingNote_8 = 102
+	elif key == "G": 
+		startingNote_0 = 7
+		startingNote_1 = 19
+		startingNote_2 = 31
+		startingNote_3 = 43
+		startingNote_4 = 55
+		startingNote_5 = 67
+		startingNote_6 = 79
+		startingNote_7 = 91
+		startingNote_8 = 103
+	elif key == "G#": 
+		startingNote_0 = 8
+		startingNote_1 = 20
+		startingNote_2 = 32
+		startingNote_3 = 44
+		startingNote_4 = 56
+		startingNote_5 = 68
+		startingNote_6 = 80
+		startingNote_7 = 92
+		startingNote_8 = 104
+	elif key == "A": 
+		startingNote_0 = 9
+		startingNote_1 = 21
+		startingNote_2 = 33
+		startingNote_3 = 45
+		startingNote_4 = 57
+		startingNote_5 = 69
+		startingNote_6 = 81
+		startingNote_7 = 93
+		startingNote_8 = 105
+	elif key == "Bb": 
+		startingNote_0 = 10
+		startingNote_1 = 22
+		startingNote_2 = 34
+		startingNote_3 = 46
+		startingNote_4 = 58
+		startingNote_5 = 70
+		startingNote_6 = 82
+		startingNote_7 = 94
+		startingNote_8 = 106
+	elif key == "B": 
+		startingNote_0 = 11
+		startingNote_1 = 23
+		startingNote_2 = 35
+		startingNote_3 = 47
+		startingNote_4 = 59
+		startingNote_5 = 71
+		startingNote_6 = 83
+		startingNote_7 = 95
+		startingNote_8 = 107
 
 	else: 
 		print("Key not accounted for")
+
+	for i in range(23): 
+		noteDict_0[i + 1] = startingNote_0 + i
+		noteDict_1[i + 1] = startingNote_1 + i
+		noteDict_2[i + 1] = startingNote_2 + i
+		noteDict_3[i + 1] = startingNote_3 + i
+		noteDict_4[i + 1] = startingNote_4 + i
+		noteDict_5[i + 1] = startingNote_5 + i
+		noteDict_6[i + 1] = startingNote_6 + i
+		noteDict_7[i + 1] = startingNote_7 + i
+		noteDict_8[i + 1] = startingNote_8 + i
 
 	piano_part_notes = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64)
 	piano_part_velocity = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64)
