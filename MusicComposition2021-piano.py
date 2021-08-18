@@ -25,10 +25,6 @@ piano_part_notes = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64)
 piano_part_velocity = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64)
 piano_part_onoff = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64) 
 
-piano_segment_notes = np.zeros((4,0), dtype=np.int64)
-piano_segment_velocity = np.zeros((4,0), dtype=np.int64)
-piano_segment_onoff = np.ones((4,0), dtype=np.int64)
-
 np.set_printoptions(linewidth=150)
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -132,93 +128,178 @@ else:
 	print("Selection not recognized")
 
 
-print("Chord modifications (y/n): ")
-aug_5  = input("#5? ")
+chord_mod = input("Chord modifications (y/n): ")
+if chord_mod == "y": 
+	aug_5  = input("#5? ")
 
-if aug_5 == "y": 
-	for k in keyDegrees: 
-		for i in range(len(k)): 
-			if k[i] == 8: 
-				k[i] = 9
+	if aug_5 == "y": 
+		for j in range(len(keyDegrees)): 
 
-dim_5  = input("b5? ")
+			k = keyDegrees[j]
 
-if dim_5 == "y": 
-	for k in keyDegrees: 
-		for i in range(len(k)): 
-			if k[i] == 8: 
-				k[i] = 7
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
 
-sus2  = input("sus2? ")
+			if applies: 
 
-if sus2 == "y": 
-	for k in keyDegrees: 
-		for i in range(len(k)): 
-			if k[i] == 4 or k[i] == 5: 
-				k[i] = 3
+				for i in range(len(k)): 
+					
+					if k[i] == 8: 
+						k[i] = 9
 
-sus4  = input("sus4? ")
+	dim_5  = input("b5? ")
 
-if sus4 == "y": 
-	for k in keyDegrees: 
-		for i in range(len(k)): 
-			if k[i] == 4 or k[i] == 5: 
-				k[i] = 6
+	if dim_5 == "y": 
+		for j in range(len(keyDegrees)): 
 
-print("Extensions (y/n): ")
-ext_6 = input("6? ")
+			k = keyDegrees[j]
 
-if ext_6 == "y": 
-	for k in keyDegrees: 
-		k.append(10)
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
 
-ext_9 = input("9? ")
+			if applies: 
+				for i in range(len(k)): 
+					
+					if k[i] == 8: 
+						k[i] = 7
 
-if ext_9 == "y": 
-	for k in keyDegrees: 
-		k.append(15)
+	sus2  = input("sus2? ")
 
-ext_9_sharp = input("#9? ")
+	if sus2 == "y": 
+		for j in range(len(keyDegrees)): 
 
-if ext_9_sharp == "y": 
-	for k in keyDegrees: 
-		k.append(16)
+			k = keyDegrees[j]
 
-ext_9_flat = input("b9? ")
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
 
-if ext_9_flat == "y": 
-	for k in keyDegrees: 
-		k.append(14)
+			if applies: 
+				for i in range(len(k)): 
+					
+					if (k[i] == 4 or k[i] == 5): 
+						k[i] = 3
 
-ext_7 = input("7? ")
+	sus4  = input("sus4? ")
 
-if ext_7 == "y": 
-	for k in keyDegrees: 
-		k.append(11)
+	if sus4 == "y": 
+		for j in range(len(keyDegrees)): 
 
-ext_maj7 = input("maj7? ")
+			k = keyDegrees[j]
 
-if ext_maj7 == "y": 
-	for k in keyDegrees: 
-		k.append(12)
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
 
-ext_11 = input("11? ")
+			if applies: 
+				for i in range(len(k)): 
+					
+					if (k[i] == 4 or k[i] == 5): 
+						k[i] = 6
 
-if ext_11 == "y": 
-	for k in keyDegrees: 
-		k.append(18)
+extensions = input("Extensions (y/n): ")
 
-ext_11_sharp = input("#11? ")
+if extensions == "y": 
+	ext_6 = input("6? ")
 
-if ext_11_sharp == "y": 
-	for k in keyDegrees: 
-		k.append(19)
+	if ext_6 == "y": 
+		for j in range(len(keyDegrees)): 
 
-ext_13 = input("13? ")
+			k = keyDegrees[j]
 
-if ext_13 == "y": 
-	for k in keyDegrees: 
-		k.append(22)
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+			if applies: 
+				k.append(10)
+
+	ext_9 = input("9? ")
+
+	if ext_9 == "y": 
+		for j in range(len(keyDegrees)):
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(15)
+
+	ext_9_sharp = input("#9? ")
+
+	if ext_9_sharp == "y": 
+		for j in range(len(keyDegrees)):
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(16)
+
+	ext_9_flat = input("b9? ")
+
+	if ext_9_flat == "y": 
+		for j in range(len(keyDegrees)): 
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(14)
+
+	ext_7 = input("7? ")
+
+	if ext_7 == "y": 
+		for j in range(len(keyDegrees)): 
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(11)
+
+	ext_maj7 = input("maj7? ")
+
+	if ext_maj7 == "y": 
+		for j in range(len(keyDegrees)):
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(12)
+
+	ext_11 = input("11? ")
+
+	if ext_11 == "y": 
+		for j in range(len(keyDegrees)): 
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(18)
+
+	ext_11_sharp = input("#11? ")
+
+	if ext_11_sharp == "y": 
+		for j in range(len(keyDegrees)):
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(19)
+
+	ext_13 = input("13? ")
+
+	if ext_13 == "y": 
+		for j in range(len(keyDegrees)): 
+
+			k = keyDegrees[j]
+
+			applies = input("    Apply to " + key[j] + " ? (y/n): ")
+
+			if applies: 
+				k.append(22)
 
 
 repititions = 4
@@ -227,6 +308,10 @@ i = 0
 while i < repititions: 
 
 	chordProgression = chord_progression.split(",")
+
+	piano_segment_notes = np.zeros((4,0), dtype=np.int64)
+	piano_segment_velocity = np.zeros((4,0), dtype=np.int64)
+	piano_segment_onoff = np.ones((4,0), dtype=np.int64)
 
 	for c in chordProgression: 
 

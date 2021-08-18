@@ -52,26 +52,26 @@ TREBLE_OCT = 6
 BASS_RHYTHM_PROB = 0.4
 TREBLE_RHYTHM_PROB = 0.5
 
-BASS_REPEATED = True
-TREBLE_REPEATED = True
+BASS_REPEATED = False
+TREBLE_REPEATED = False
 
 BASS_REPEAT_UNIT = 4
 TREBLE_REPEAT_UNIT = 8
 
-BASS_RANDOM= True
-TREBLE_RANDOM = True
+BASS_RANDOM= False
+TREBLE_RANDOM = False
 
 TREBLE_WHOLE_NOTES = False
 TREBLE_HALF_NOTES = False
 TREBLE_QUARTER_NOTES = False
 TREBLE_EIGHTH_NOTES = False
-TREBLE_SIXTEENTH_NOTES = False
+TREBLE_SIXTEENTH_NOTES = True
 
 BASS_WHOLE_NOTES = False
 BASS_HALF_NOTES = False
 BASS_QUARTER_NOTES = False
 BASS_EIGHTH_NOTES = False
-BASS_SIXTEENTH_NOTES = False
+BASS_SIXTEENTH_NOTES = True
 
 
 def get(scaleDegrees = [1,5,8,12]) : 
@@ -89,7 +89,12 @@ def get(scaleDegrees = [1,5,8,12]) :
 	base_octave_treble = np.zeros((1,NUM_16th_PER_BAR), dtype=np.int64)
 
 	if BASS_ON: 
-		if BASS_RANDOM and BASS_REPEATED: 
+
+		if BASS_SIXTEENTH_NOTES: 
+			base_notes_bass = np.random.choice(scaleDegrees, size=(1,NUM_16th_PER_BAR))
+			base_rhythm_bass = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
+
+		elif BASS_RANDOM and BASS_REPEATED: 
 
 			if NUM_16th_PER_BAR >= 4 and BASS_REPEAT_UNIT == 4: 
 				micro_rhythm_bass = np.random.binomial(2, BASS_RHYTHM_PROB, size=(1,4))
@@ -177,7 +182,12 @@ def get(scaleDegrees = [1,5,8,12]) :
 			print("Case not accounted for")
 
 	if TREBLE_ON: 
-		if TREBLE_RANDOM and TREBLE_REPEATED: 
+
+		if TREBLE_SIXTEENTH_NOTES: 
+			base_notes_treble = np.random.choice(scaleDegrees, size=(3,NUM_16th_PER_BAR))
+			base_rhythm_treble = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
+
+		elif TREBLE_RANDOM and TREBLE_REPEATED: 
 
 			if NUM_16th_PER_BAR >= 4 and TREBLE_REPEAT_UNIT == 4: 
 				micro_rhythm_treble = np.random.binomial(2, TREBLE_RHYTHM_PROB, size=(1,4))
@@ -265,19 +275,15 @@ def get(scaleDegrees = [1,5,8,12]) :
 			print("Case not accounted for")
 
 	bass_part[0].fill(BASS_VOL)
-	treble_part[0].fill(TREBLE_VOL)
-
 	bass_part[1] = base_rhythm_bass[0]
-	treble_part[1] = base_rhythm_treble[0]
-
 	bass_part[2].fill(BASS_OCT)
-	treble_part[2].fill(TREBLE_OCT)
-
 	bass_part[3] = base_notes_bass[0]
+
+	treble_part[0].fill(TREBLE_VOL)
+	treble_part[1] = base_rhythm_treble[0]
+	treble_part[2].fill(TREBLE_OCT)
 	treble_part[3] = base_notes_treble[0]
-
 	treble_part[4] = base_notes_treble[1]
-
 	treble_part[5] = base_notes_treble[2]
 
 	return bass_part, treble_part

@@ -9,6 +9,8 @@ from globals import SONG_LENGTH
 from globals import TEMPO
 from globals import TIME_SIG
 
+NUM_16th_PER_BAR = TIME_SIG * 4
+
 MAX_SUSTAIN = 200 # maximum time to sustain a note before it gets removed
 MIN_LENGTH = 100
 
@@ -75,7 +77,8 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename, instru
             #track.append(MetaMessage('set_tempo', tempo=TEMPO, time=0))
 
             timeSinceLastMessage = 0
-
+            clock = 0 
+            currentNotes = []
 
             for j in range(min(noteArray.shape[1], velocityArray.shape[1], onOffArray.shape[1])):
 
@@ -101,16 +104,24 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename, instru
                 elif noteVelocity > 127: 
 
                     noteVelocity = 127
-                    
-                    
+
+                for note in currentNotes: 
+                    if clock - note[2] >= 120: 
+                        track.append(Message('note_off', channel = 1, note= note[0], velocity=note[1], time=timeSinceLastMessage - 120))
+                        currentNotes.remove(note)
+                     
                 if onOff > 0.9 and onOff < 1.1 and noteValue > 0 : 
 
                     track.append(Message('note_on', channel = 1, note= noteValue, velocity=noteVelocity, time=timeSinceLastMessage))
+                    currentNotes.append((noteValue, noteVelocity, clock))
                     messageGenerated = True
 
                 elif onOff > 1.9 and onOff < 2.1: 
                      
-                    track.append(Message('note_off', channel = 1, note= noteValue, velocity=noteVelocity, time=timeSinceLastMessage))
+                    for note in currentNotes: 
+                        track.append(Message('note_off', channel = 1, note= note[0], velocity=note[1], time=timeSinceLastMessage - 120))
+
+                    currentNotes = []
                     messageGenerated = True
 
                 else: 
@@ -128,6 +139,8 @@ def createMidiFile(noteArray, velocityArray, onOffArray, tempo, filename, instru
                 else: 
                     # if there was no message, simply increment the time since the last message
                     timeSinceLastMessage = timeSinceLastMessage + 120
+
+                clock += 120
 
         mid.save("midi/" +  filename + '.mid')
 
