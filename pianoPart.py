@@ -3,7 +3,9 @@
 
 import numpy as np
 import itertools
+import random
 from globals import TIME_SIG
+from random import randint
 
 np.set_printoptions(linewidth=150)
 
@@ -49,6 +51,9 @@ TREBLE_VOL = 90
 BASS_OCT = 3
 TREBLE_OCT = 6
 
+BASS_MARKOV = True
+TREBLE_MARKOV = True
+
 BASS_RHYTHM_PROB = 0.4
 TREBLE_RHYTHM_PROB = 0.5
 
@@ -71,7 +76,7 @@ BASS_WHOLE_NOTES = False
 BASS_HALF_NOTES = False
 BASS_QUARTER_NOTES = False
 BASS_EIGHTH_NOTES = False
-BASS_SIXTEENTH_NOTES = True
+BASS_SIXTEENTH_NOTES = False
 
 
 def get(scaleDegrees = [1,5,8,12]) : 
@@ -90,7 +95,34 @@ def get(scaleDegrees = [1,5,8,12]) :
 
 	if BASS_ON: 
 
-		if BASS_SIXTEENTH_NOTES: 
+		if BASS_MARKOV: 
+
+			transition_matrix = np.random.rand(len(scaleDegrees), len(scaleDegrees))
+
+			for i in range(transition_matrix.shape[0]): 
+				transition_matrix[i,:] = transition_matrix[i,:] / transition_matrix[i,:].sum()
+
+			print("----------------------------")
+			print(transition_matrix)
+
+			degreeIndex = randint(0, len(scaleDegrees) - 1)
+			notes = [scaleDegrees[degreeIndex]]
+
+			for i in range(1, NUM_16th_PER_BAR): 
+				nextDegreeIndex = random.choices(range(len(scaleDegrees)), 
+					weights= transition_matrix[degreeIndex,:].tolist(), k = 1)[0]
+
+				notes.append(scaleDegrees[nextDegreeIndex])
+
+				degreeIndex = nextDegreeIndex
+
+			print("-----------------------------")
+			print(notes)
+
+			base_notes_bass = np.array([notes], dtype=np.int64)
+			base_rhythm_bass = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
+
+		elif BASS_SIXTEENTH_NOTES: 
 			base_notes_bass = np.random.choice(scaleDegrees, size=(1,NUM_16th_PER_BAR))
 			base_rhythm_bass = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
 
@@ -183,7 +215,35 @@ def get(scaleDegrees = [1,5,8,12]) :
 
 	if TREBLE_ON: 
 
-		if TREBLE_SIXTEENTH_NOTES: 
+		if TREBLE_MARKOV: 
+			
+			transition_matrix = np.random.rand(len(scaleDegrees), len(scaleDegrees))
+
+			for i in range(transition_matrix.shape[0]): 
+				transition_matrix[i,:] = transition_matrix[i,:] / transition_matrix[i,:].sum()
+
+			print("----------------------------")
+			print(transition_matrix)
+
+			degreeIndex = randint(0, len(scaleDegrees) - 1)
+			notes = [scaleDegrees[degreeIndex]]
+
+			for i in range(1, NUM_16th_PER_BAR): 
+				nextDegreeIndex = random.choices(range(len(scaleDegrees)), 
+					weights= transition_matrix[degreeIndex,:].tolist(), k = 1)[0]
+
+				notes.append(scaleDegrees[nextDegreeIndex])
+
+				degreeIndex = nextDegreeIndex
+
+			print("-----------------------------")
+			print(notes)
+
+			base_notes_treble = np.array([notes, notes, notes], dtype=np.int64)
+			base_rhythm_treble = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
+
+
+		elif TREBLE_SIXTEENTH_NOTES: 
 			base_notes_treble = np.random.choice(scaleDegrees, size=(3,NUM_16th_PER_BAR))
 			base_rhythm_treble = np.ones((1,NUM_16th_PER_BAR), dtype=np.int64)
 
