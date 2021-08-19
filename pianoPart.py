@@ -81,6 +81,49 @@ BASS_SIXTEENTH_NOTES = False
 
 def get(scaleDegrees = [1,5,8,12]) : 
 
+	transition_matrix = np.array( [
+		# 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23
+		[ 0, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #1 : 1 (root)
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #2 : b2
+		[ 3, 0, 0, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #3 : 2
+		[ 3, 0, 2, 0, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #4 : b3
+		[ 3, 0, 2, 5, 0, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #5 : 3
+		[ 6, 0, 2, 5, 5, 0, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #6 : 4
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #7 : b5
+		[ 8, 0, 2, 5, 5, 6, 0, 0, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #8 : 5
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #9 : #5
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 0,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #10 : 6
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  0,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #11 : b7
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  0,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #12 : 7
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  0,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3], #13 : 8 (root up one)
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  0,  3,  3,  3,  3,  3,  3,  3,  3,  3], #14 : b9
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  0,  3,  3,  3,  3,  3,  3,  3,  3], #15 : 9
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  0,  3,  3,  3,  3,  3,  3,  3], #16 : #9
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  0,  3,  3,  3,  3,  3,  3], #17 : b11
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  0,  3,  3,  3,  3,  3], #18 : 11
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  0,  3,  3,  3,  3], #19 : #11
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  0,  3,  3,  3], #20 : ?
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  0,  3,  3], #21 : b13
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  0,  3], #22 : 13
+		[ 3, 0, 2, 5, 5, 6, 0, 8, 0, 4,  4,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  0],  #23 : #13
+
+	], dtype=np.float64)
+
+	for i in range(transition_matrix.shape[0]): 
+		if i + 1 not in scaleDegrees: 
+			transition_matrix[i,:] = np.zeros((1,23), dtype=np.float64)
+
+	for j in range(transition_matrix.shape[1]): 
+		if j + 1 not in scaleDegrees: 
+			transition_matrix[:,j] = np.zeros((1,23), dtype=np.float64)[:, None]
+
+	for i in range(transition_matrix.shape[0]): 
+		if transition_matrix[i,:].sum() > 0.01: 
+			transition_matrix[i,:] = transition_matrix[i,:] / transition_matrix[i,:].sum()
+
+	print("----------------------------")
+	print(transition_matrix)
+
 	bass_part = np.zeros((4,NUM_16th_PER_BAR), dtype=np.int64)
 	treble_part = np.zeros((6,NUM_16th_PER_BAR), dtype=np.int64)
 
@@ -97,24 +140,17 @@ def get(scaleDegrees = [1,5,8,12]) :
 
 		if BASS_MARKOV: 
 
-			transition_matrix = np.random.rand(len(scaleDegrees), len(scaleDegrees))
+			scaleDegree = random.choice(scaleDegrees)
 
-			for i in range(transition_matrix.shape[0]): 
-				transition_matrix[i,:] = transition_matrix[i,:] / transition_matrix[i,:].sum()
-
-			print("----------------------------")
-			print(transition_matrix)
-
-			degreeIndex = randint(0, len(scaleDegrees) - 1)
-			notes = [scaleDegrees[degreeIndex]]
+			notes = [scaleDegree]
 
 			for i in range(1, NUM_16th_PER_BAR): 
-				nextDegreeIndex = random.choices(range(len(scaleDegrees)), 
-					weights= transition_matrix[degreeIndex,:].tolist(), k = 1)[0]
+				nextScaleDegree = random.choices(range(23), 
+					weights= transition_matrix[scaleDegree - 1,:].tolist(), k = 1)[0] + 1
 
-				notes.append(scaleDegrees[nextDegreeIndex])
+				notes.append(nextScaleDegree)
 
-				degreeIndex = nextDegreeIndex
+				scaleDegree = nextScaleDegree
 
 			print("-----------------------------")
 			print(notes)
@@ -217,24 +253,17 @@ def get(scaleDegrees = [1,5,8,12]) :
 
 		if TREBLE_MARKOV: 
 			
-			transition_matrix = np.random.rand(len(scaleDegrees), len(scaleDegrees))
+			scaleDegree = random.choice(scaleDegrees)
 
-			for i in range(transition_matrix.shape[0]): 
-				transition_matrix[i,:] = transition_matrix[i,:] / transition_matrix[i,:].sum()
-
-			print("----------------------------")
-			print(transition_matrix)
-
-			degreeIndex = randint(0, len(scaleDegrees) - 1)
-			notes = [scaleDegrees[degreeIndex]]
+			notes = [scaleDegree]
 
 			for i in range(1, NUM_16th_PER_BAR): 
-				nextDegreeIndex = random.choices(range(len(scaleDegrees)), 
-					weights= transition_matrix[degreeIndex,:].tolist(), k = 1)[0]
+				nextScaleDegree = random.choices(range(23), 
+					weights= transition_matrix[scaleDegree - 1,:].tolist(), k = 1)[0] + 1
 
-				notes.append(scaleDegrees[nextDegreeIndex])
+				notes.append(nextScaleDegree)
 
-				degreeIndex = nextDegreeIndex
+				scaleDegree = nextScaleDegree
 
 			print("-----------------------------")
 			print(notes)
